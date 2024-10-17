@@ -1,0 +1,11 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "author": "nhphuc",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
