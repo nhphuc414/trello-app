@@ -3,10 +3,10 @@ import { env } from '~/config/environment'
 import express from 'express'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import exitHook from 'async-exit-hook'
-
+import { APIs_V1 } from './routes/v1'
 const START_SERVER = () => {
   const app = express()
-
+  app.use('/v1', APIs_V1)
   app.get('/', (req, res) => {
     res.send('<h1>Welcome to my API Server</h1>')
   })
