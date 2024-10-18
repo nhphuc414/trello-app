@@ -6,6 +6,7 @@ import exitHook from 'async-exit-hook'
 import { APIs_V1 } from './routes/v1'
 const START_SERVER = () => {
   const app = express()
+  app.use(express.json())
   app.use('/v1', APIs_V1)
   app.get('/', (req, res) => {
     res.send('<h1>Welcome to my API Server</h1>')
