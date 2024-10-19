@@ -1,5 +1,6 @@
 import Joi from 'joi'
 import { GET_DB } from '~/config/mongodb'
+import { ObjectId } from 'mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 const BOARD_COLLECTION_NAME = 'boards'
 const BOARD_COLLECTION_SCHEMA = Joi.object({
@@ -14,27 +15,34 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   _destroy: Joi.boolean().default(false)
 })
 
+const validateBeforeCreate = async (data) => {
+  return await BOARD_COLLECTION_SCHEMA.validateAsync(data, {
+    abortEarly: false
+  })
+}
+
 const createNew = async (data) => {
-  try {
-    const createdBoard = await GET_DB()
-      .collection(BOARD_COLLECTION_NAME)
-      .insertOne(data)
-    return createdBoard
-  } catch (error) {
-    throw new Error(error)
-  }
+  const validData = await validateBeforeCreate(data)
+  const createdBoard = await GET_DB()
+    .collection(BOARD_COLLECTION_NAME)
+    .insertOne(validData)
+  return createdBoard
 }
 
 const findOneById = async (id) => {
-  try {
-    return await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({ _id: id })
-  } catch (error) {
-    throw new Error(error)
-  }
+  return await GET_DB()
+    .collection(BOARD_COLLECTION_NAME)
+    .findOne({ _id: ObjectId.createFromHexString(id.toString()) })
+}
+const getDetails = async (id) => {
+  return await GET_DB()
+    .collection(BOARD_COLLECTION_NAME)
+    .findOne({ _id: ObjectId.createFromHexString(id.toString()) })
 }
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
   createNew,
-  findOneById
+  findOneById,
+  getDetails
 }
