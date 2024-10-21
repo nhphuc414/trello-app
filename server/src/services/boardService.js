@@ -10,7 +10,10 @@ const createNew = async (reqBody) => {
   }
   const createdBoard = await boardModel.createNew(newBoard)
   const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
-
+  if (getNewBoard) {
+    getNewBoard.columns = []
+    getNewBoard.cards = []
+  }
   return getNewBoard
 }
 const getDetails = async (boardId) => {

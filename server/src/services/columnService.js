@@ -1,11 +1,15 @@
 import { StatusCodes } from 'http-status-codes'
+import { boardModel } from '~/models/boardModel'
 import { columnModel } from '~/models/columnModel'
 import ApiError from '~/utils/ApiError'
 
 const createNew = async (reqBody) => {
   const createdColumn = await columnModel.createNew(reqBody)
   const getNewColumn = await columnModel.findOneById(createdColumn.insertedId)
-
+  if (getNewColumn) {
+    getNewColumn.cards = []
+    await boardModel.pushColumnOrderIds(getNewColumn)
+  }
   return getNewColumn
 }
 const getDetails = async (columnId) => {

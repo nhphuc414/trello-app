@@ -1,11 +1,14 @@
 import { StatusCodes } from 'http-status-codes'
 import { cardModel } from '~/models/cardModel'
+import { columnModel } from '~/models/columnModel'
 import ApiError from '~/utils/ApiError'
 
 const createNew = async (reqBody) => {
   const createdCard = await cardModel.createNew(reqBody)
   const getNewCard = await cardModel.findOneById(createdCard.insertedId)
-
+  if (getNewCard) {
+    await columnModel.pushCardOrderIds(getNewCard)
+  }
   return getNewCard
 }
 const getDetails = async (cardId) => {
