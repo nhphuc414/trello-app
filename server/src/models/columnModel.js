@@ -23,35 +23,62 @@ const validateBeforeCreate = async (data) => {
     abortEarly: false
   })
 }
-
+//================== INVALID FIELD ==================//
+const INVALID_UPDATE_FIELDS = ['_id', 'createAt']
+//================== CREATE NEW ==================//
 const createNew = async (data) => {
   const validData = await validateBeforeCreate(data)
-  const createdColumn = await GET_DB()
+  return await GET_DB()
     .collection(COLUMN_COLLECTION_NAME)
     .insertOne({ ...validData, boardId: new ObjectId(`${validData.boardId}`) })
-  return createdColumn
 }
-const pushCardOrderIds = async (card) => {
-  const columnIds = await GET_DB()
+//================== UPDATE COLUMN ==================//
+const update = async (id, data) => {
+  INVALID_UPDATE_FIELDS.forEach((field) => {
+    delete data[field]
+  })
+  if (data.cardOrderIds)
+    data.cardOrderIds = data.cardOrderIds.map((item) => new ObjectId(`${item}`))
+  return await GET_DB()
     .collection(COLUMN_COLLECTION_NAME)
     .findOneAndUpdate(
-      {
-        _id: new ObjectId(`${card.columnId}`)
-      },
-      { $push: { cardOrderIds: new ObjectId(`${card._id}`) } },
+      { _id: new ObjectId(`${id}`) },
+      { $set: data },
       { returnDocument: 'after' }
     )
-  return columnIds.value || null
 }
+//================== UPDATE CARD ==================//
+const pushCardOrderIds = async (card) => {
+  return (
+    (await GET_DB()
+      .collection(COLUMN_COLLECTION_NAME)
+      .findOneAndUpdate(
+        {
+          _id: new ObjectId(`${card.columnId}`)
+        },
+        { $push: { cardOrderIds: new ObjectId(`${card._id}`) } },
+        { returnDocument: 'after' }
+      )) || null
+  )
+}
+//================== FIND BY ID ==================//
 const findOneById = async (id) => {
   return await GET_DB()
     .collection(COLUMN_COLLECTION_NAME)
     .findOne({ _id: new ObjectId(`${id}`) })
+}
+
+const deleteOneById = async (id) => {
+  return await GET_DB()
+    .collection(COLUMN_COLLECTION_NAME)
+    .deleteOne({ _id: new ObjectId(`${id}`) })
 }
 export const columnModel = {
   COLUMN_COLLECTION_NAME,
   COLUMN_COLLECTION_SCHEMA,
   createNew,
   findOneById,
-  pushCardOrderIds
+  pushCardOrderIds,
+  update,
+  deleteOneById
 }

@@ -1,23 +1,24 @@
 import { StatusCodes } from 'http-status-codes'
 import { boardService } from '~/services/boardService'
 const createNew = async (req, res, next) => {
-  try {
-    const createBoard = await boardService.createNew(req.body)
-    res.status(StatusCodes.CREATED).json(createBoard)
-  } catch (error) {
-    next(error)
-  }
+  const newBoard = await boardService.createNew(req.body)
+  res.status(StatusCodes.CREATED).json(newBoard)
+}
+const update = async (req, res, next) => {
+  const board = await boardService.update(req.params.id, req.body)
+  res.status(StatusCodes.OK).json(board)
 }
 const getDetails = async (req, res, next) => {
-  try {
-    const boardId = req.params.id
-    const board = await boardService.getDetails(boardId)
-    res.status(StatusCodes.OK).json(board)
-  } catch (error) {
-    next(error)
-  }
+  const board = await boardService.getDetails(req.params.id)
+  res.status(StatusCodes.OK).json(board)
+}
+const moveCardToDifferentColumn = async (req, res, next) => {
+  const result = await boardService.moveCardToDifferentColumn(req.body)
+  res.status(StatusCodes.OK).json(result)
 }
 export const boardController = {
   createNew,
-  getDetails
+  getDetails,
+  update,
+  moveCardToDifferentColumn
 }

@@ -1,6 +1,6 @@
 import Joi from 'joi'
 import { GET_DB } from '~/config/mongodb'
-import { ObjectId, ReturnDocument } from 'mongodb'
+import { ObjectId } from 'mongodb'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 import { BOARD_TYPES } from '~/utils/constants'
 import { columnModel } from './columnModel'
@@ -18,6 +18,7 @@ const BOARD_COLLECTION_SCHEMA = Joi.object({
   updatedAt: Joi.date().timestamp('javascript').default(null),
   _destroy: Joi.boolean().default(false)
 })
+const INVALID_UPDATE_FIELDS = ['_id', 'createAt']
 
 const validateBeforeCreate = async (data) => {
   return await BOARD_COLLECTION_SCHEMA.validateAsync(data, {
@@ -27,28 +28,54 @@ const validateBeforeCreate = async (data) => {
 
 const createNew = async (data) => {
   const validData = await validateBeforeCreate(data)
-  const createdBoard = await GET_DB()
-    .collection(BOARD_COLLECTION_NAME)
-    .insertOne(validData)
-  return createdBoard
+  return await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(validData)
 }
-
+const update = async (id, data) => {
+  INVALID_UPDATE_FIELDS.forEach((field) => {
+    delete data[field]
+  })
+  if (data.columnOrderIds)
+    data.columnOrderIds = data.columnOrderIds.map(
+      (item) => new ObjectId(`${item}`)
+    )
+  return await GET_DB()
+    .collection(BOARD_COLLECTION_NAME)
+    .findOneAndUpdate(
+      { _id: new ObjectId(`${id}`) },
+      { $set: data },
+      { returnDocument: 'after' }
+    )
+}
 const findOneById = async (id) => {
   return await GET_DB()
     .collection(BOARD_COLLECTION_NAME)
     .findOne({ _id: new ObjectId(`${id}`) })
 }
 const pushColumnOrderIds = async (column) => {
-  const columnIds = await GET_DB()
-    .collection(BOARD_COLLECTION_NAME)
-    .findOneAndUpdate(
-      {
-        _id: new ObjectId(`${column.boardId}`)
-      },
-      { $push: { columnOrderIds: new ObjectId(`${column._id}`) } },
-      { returnDocument: 'after' }
-    )
-  return columnIds.value || null
+  return (
+    (await GET_DB()
+      .collection(BOARD_COLLECTION_NAME)
+      .findOneAndUpdate(
+        {
+          _id: new ObjectId(`${column.boardId}`)
+        },
+        { $pull: { columnOrderIds: new ObjectId(`${column._id}`) } },
+        { returnDocument: 'after' }
+      )) || null
+  )
+}
+const pullColumnOrderIds = async (column) => {
+  return (
+    (await GET_DB()
+      .collection(BOARD_COLLECTION_NAME)
+      .findOneAndUpdate(
+        {
+          _id: new ObjectId(`${column.boardId}`)
+        },
+        { $push: { columnOrderIds: new ObjectId(`${column._id}`) } },
+        { returnDocument: 'after' }
+      )) || null
+  )
 }
 const getDetails = async (id) => {
   const result = await GET_DB()
@@ -104,5 +131,7 @@ export const boardModel = {
   createNew,
   findOneById,
   getDetails,
-  pushColumnOrderIds
+  pushColumnOrderIds,
+  pullColumnOrderIds,
+  update
 }

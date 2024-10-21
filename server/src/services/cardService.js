@@ -3,24 +3,23 @@ import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
 import ApiError from '~/utils/ApiError'
 
-const createNew = async (reqBody) => {
-  const createdCard = await cardModel.createNew(reqBody)
+const createNew = async (data) => {
+  const createdCard = await cardModel.createNew(data)
   const getNewCard = await cardModel.findOneById(createdCard.insertedId)
   if (getNewCard) {
     await columnModel.pushCardOrderIds(getNewCard)
   }
   return getNewCard
 }
-const getDetails = async (cardId) => {
-  const card = await cardModel.getDetails(cardId)
-  if (!card) throw new ApiError(StatusCodes.NOT_FOUND, 'Card not found!')
-  // const rescard = cloneDeep(card)
-  // rescard.columns.forEach((column) => {
-  //   column.cards = rescard.cards.filter((card) => card.columnId === column._id)
-  // })
-  return card
+const update = async (id, data) => {
+  const validData = {
+    ...data,
+    updateAt: Date.now()
+  }
+  return await cardModel.update(id, validData)
 }
+
 export const cardService = {
   createNew,
-  getDetails
+  update
 }

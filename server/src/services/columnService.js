@@ -1,10 +1,11 @@
 import { StatusCodes } from 'http-status-codes'
 import { boardModel } from '~/models/boardModel'
+import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
 import ApiError from '~/utils/ApiError'
 
-const createNew = async (reqBody) => {
-  const createdColumn = await columnModel.createNew(reqBody)
+const createNew = async (data) => {
+  const createdColumn = await columnModel.createNew(data)
   const getNewColumn = await columnModel.findOneById(createdColumn.insertedId)
   if (getNewColumn) {
     getNewColumn.cards = []
@@ -12,16 +13,22 @@ const createNew = async (reqBody) => {
   }
   return getNewColumn
 }
-const getDetails = async (columnId) => {
-  const column = await columnModel.getDetails(columnId)
-  if (!column) throw new ApiError(StatusCodes.NOT_FOUND, 'Column not found!')
-  // const rescolumn = cloneDeep(column)
-  // rescolumn.columns.forEach((column) => {
-  //   column.cards = rescolumn.cards.filter((card) => card.columnId === column._id)
-  // })
-  return column
+const update = async (id, data) => {
+  const validData = {
+    ...data,
+    updateAt: Date.now()
+  }
+  return await columnModel.update(id, validData)
+}
+const deleteItem = async (id) => {
+  const column = await columnModel.findOneById(id)
+  await boardModel.pullColumnOrderIds(column)
+  await columnModel.deleteOneById(id)
+  await cardModel.deleteManyByColumnId(id)
+  return { deleteResult: 'Column and its Cards deleted successfully!!' }
 }
 export const columnService = {
   createNew,
-  getDetails
+  update,
+  deleteItem
 }
