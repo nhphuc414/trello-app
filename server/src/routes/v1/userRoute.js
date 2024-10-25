@@ -1,6 +1,7 @@
 import express from 'express'
 import { userController } from '~/controllers/userController'
 import asyncMiddleware from '~/middlewares/asyncMiddleware'
+import { authMiddleware } from '~/middlewares/authMiddleware'
 import { userValidation } from '~/validations/userValidation'
 const Router = express.Router()
 
@@ -15,5 +16,13 @@ Router.route('/verify').put(
 Router.route('/login').post(
   userValidation.login,
   asyncMiddleware(userController.login)
+)
+Router.route('/logout').delete(asyncMiddleware(userController.logout))
+
+Router.route('/refresh_token').put(asyncMiddleware(userController.refreshToken))
+Router.route('/update').put(
+  authMiddleware.isAuthorized,
+  userValidation.updateUser,
+  asyncMiddleware(userController.updateUser)
 )
 export const userRoute = Router

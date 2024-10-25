@@ -63,7 +63,8 @@ const login = async (data) => {
       StatusCodes.NOT_ACCEPTABLE,
       'Your account is not active!'
     )
-  if (!bcryptjs.compare(data.password, existUser.password))
+
+  if (!bcryptjs.compareSync(data.password, existUser.password))
     throw new ApiError(StatusCodes.NOT_FOUND, 'Wrong email or password!')
 
   const userInfo = {
@@ -82,4 +83,45 @@ const login = async (data) => {
   )
   return { accessToken, refreshToken, ...pickUser(existUser) }
 }
-export const userService = { createNew, verifyAccount, login }
+const refreshToken = async (data) => {
+  const refreshTokenDecoded = await JwtProvider.verifyToken(
+    data,
+    env.REFRESH_TOKEN_SECRET_SIGNATURE
+  )
+  const userInfo = {
+    _id: refreshTokenDecoded._id,
+    email: refreshTokenDecoded.email
+  }
+  const accessToken = await JwtProvider.generateToken(
+    userInfo,
+    env.ACCESS_TOKEN_SECRET_SIGNATURE,
+    env.ACCESS_TOKEN_LIFE
+  )
+  return { accessToken }
+}
+const updateUser = async (id, data) => {
+  const existUser = await userModel.findOneById(id)
+  if (!existUser)
+    throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found!')
+  let updatedUser = {}
+  if (data.current_password && data.new_password) {
+    if (!bcryptjs.compareSync(data.current_password, existUser.password))
+      throw new ApiError(
+        StatusCodes.NOT_FOUND,
+        'Your current password is incorrect!'
+      )
+    updatedUser = await userModel.update(id, {
+      password: bcryptjs.hashSync(data.new_password, 8)
+    })
+  } else {
+    updatedUser = await userModel.update(id, data)
+  }
+  return pickUser(updatedUser)
+}
+export const userService = {
+  createNew,
+  verifyAccount,
+  login,
+  refreshToken,
+  updateUser
+}
