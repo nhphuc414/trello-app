@@ -1,18 +1,18 @@
 import { StatusCodes } from 'http-status-codes'
 import { boardService } from '~/services/boardService'
-const createNew = async (req, res, next) => {
+const createNew = async (req, res) => {
   const newBoard = await boardService.createNew(req.body)
   res.status(StatusCodes.CREATED).json(newBoard)
 }
-const update = async (req, res, next) => {
+const update = async (req, res) => {
   const board = await boardService.update(req.params.id, req.body)
   res.status(StatusCodes.OK).json(board)
 }
-const getDetails = async (req, res, next) => {
+const getDetails = async (req, res) => {
   const board = await boardService.getDetails(req.params.id)
   res.status(StatusCodes.OK).json(board)
 }
-const moveCardToDifferentColumn = async (req, res, next) => {
+const moveCardToDifferentColumn = async (req, res) => {
   const result = await boardService.moveCardToDifferentColumn(req.body)
   res.status(StatusCodes.OK).json(result)
 }

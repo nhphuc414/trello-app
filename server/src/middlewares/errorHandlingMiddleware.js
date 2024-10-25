@@ -12,6 +12,7 @@ export const errorHandlingMiddleware = (err, req, res, next) => {
   // console.log(responseError)
   if (env.BUILD_MODE !== 'dev') {
     delete responseError.stack
+    // eslint-disable-next-line no-console
   } else console.log(responseError.stack)
   res.status(responseError.statusCode).json(responseError)
 }

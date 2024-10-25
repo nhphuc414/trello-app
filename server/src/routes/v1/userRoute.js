@@ -8,4 +8,12 @@ Router.route('/register').post(
   userValidation.createNew,
   asyncMiddleware(userController.createNew)
 )
+Router.route('/verify').put(
+  userValidation.verifyAccount,
+  asyncMiddleware(userController.verifyAccount)
+)
+Router.route('/login').post(
+  userValidation.login,
+  asyncMiddleware(userController.login)
+)
 export const userRoute = Router
