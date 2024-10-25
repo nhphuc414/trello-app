@@ -10,6 +10,8 @@ export const errorHandlingMiddleware = (err, req, res, next) => {
     stack: err.stack
   }
   // console.log(responseError)
-  if (env.BUILD_MODE !== 'dev') delete responseError.stack
+  if (env.BUILD_MODE !== 'dev') {
+    delete responseError.stack
+  } else console.log(responseError.stack)
   res.status(responseError.statusCode).json(responseError)
 }
