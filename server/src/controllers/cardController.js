@@ -5,7 +5,8 @@ const createNew = async (req, res) => {
   res.status(StatusCodes.CREATED).json(newCard)
 }
 const update = async (req, res) => {
-  const card = await cardService.update(req.params.id, req.body)
+  const cardCoverFile = req.file
+  const card = await cardService.update(req.params.id, req.body, cardCoverFile)
   res.status(StatusCodes.OK).json(card)
 }
 

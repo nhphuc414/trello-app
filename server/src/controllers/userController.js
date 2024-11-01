@@ -34,7 +34,12 @@ const logout = async (req, res) => {
 }
 const updateUser = async (req, res) => {
   const userId = req.jwtDecoded._id
-  const updatedUser = await userService.updateUser(userId, req.body)
+  const userAvatarFile = req.file
+  const updatedUser = await userService.updateUser(
+    userId,
+    req.body,
+    userAvatarFile
+  )
   res.status(StatusCodes.OK).json(updatedUser)
 }
 export const userController = {

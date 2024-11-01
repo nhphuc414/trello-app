@@ -6,9 +6,9 @@ import { v4 as uuidv4 } from 'uuid'
 import { pickUser } from '~/utils/formatters'
 import { WEBSITE_DOMAIN } from '~/utils/constants'
 import { BrevoProvider } from '~/providers/BrevoProvider'
-import { emit } from 'nodemon'
 import { JwtProvider } from '~/providers/JwtProvider'
 import { env } from '~/config/environment'
+import { CloudinaryProvider } from '~/providers/cloudinaryProvider'
 const createNew = async (data) => {
   const existUser = await userModel.findOneByEmail(data.email)
   if (existUser)
@@ -99,7 +99,7 @@ const refreshToken = async (data) => {
   )
   return { accessToken }
 }
-const updateUser = async (id, data) => {
+const updateUser = async (id, data, userAvatarFile) => {
   const existUser = await userModel.findOneById(id)
   if (!existUser)
     throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found!')
@@ -112,6 +112,14 @@ const updateUser = async (id, data) => {
       )
     updatedUser = await userModel.update(id, {
       password: bcryptjs.hashSync(data.new_password, 8)
+    })
+  } else if (userAvatarFile) {
+    const updateResult = await CloudinaryProvider.uploadStream(
+      userAvatarFile.buffer,
+      'users'
+    )
+    updatedUser = await userModel.update(id, {
+      avatar: updateResult.secure_url
     })
   } else {
     updatedUser = await userModel.update(id, data)

@@ -3,14 +3,15 @@ import { boardModel } from '~/models/boardModel'
 import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
 import ApiError from '~/utils/ApiError'
+import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from '~/utils/constants'
 import { slugify } from '~/utils/formatters'
 
-const createNew = async (data) => {
+const createNew = async (userId, data) => {
   const newData = {
     ...data,
     slug: slugify(data.title)
   }
-  const createdBoard = await boardModel.createNew(newData)
+  const createdBoard = await boardModel.createNew(userId, newData)
   const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
   if (getNewBoard) {
     getNewBoard.columns = []
@@ -28,8 +29,8 @@ const update = async (id, data) => {
   }
   return await boardModel.update(id, validData)
 }
-const getDetails = async (id) => {
-  const board = await boardModel.getDetails(id)
+const getDetails = async (userId, boardId) => {
+  const board = await boardModel.getDetails(userId, boardId)
   if (!board) throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found!')
   // const resBoard = cloneDeep(board)
   // resBoard.columns.forEach((column) => {
@@ -51,9 +52,19 @@ const moveCardToDifferentColumn = async (data) => {
   })
   return { updateResullt: 'Successfully!' }
 }
+const getBoards = async (userId, page, itemsPerPage) => {
+  if (!page) page = DEFAULT_PAGE
+  if (!itemsPerPage) itemsPerPage = DEFAULT_ITEMS_PER_PAGE
+  return await boardModel.getBoards(
+    userId,
+    parseInt(page, 10),
+    parseInt(itemsPerPage, 10)
+  )
+}
 export const boardService = {
   createNew,
   getDetails,
   update,
+  getBoards,
   moveCardToDifferentColumn
 }

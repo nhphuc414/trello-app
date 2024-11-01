@@ -2,6 +2,7 @@ import express from 'express'
 import { userController } from '~/controllers/userController'
 import asyncMiddleware from '~/middlewares/asyncMiddleware'
 import { authMiddleware } from '~/middlewares/authMiddleware'
+import { multerUploadMiddleware } from '~/middlewares/multerUploadMiddleware'
 import { userValidation } from '~/validations/userValidation'
 const Router = express.Router()
 
@@ -22,6 +23,7 @@ Router.route('/logout').delete(asyncMiddleware(userController.logout))
 Router.route('/refresh_token').put(asyncMiddleware(userController.refreshToken))
 Router.route('/update').put(
   authMiddleware.isAuthorized,
+  multerUploadMiddleware.upload.single('avatar'),
   userValidation.updateUser,
   asyncMiddleware(userController.updateUser)
 )
