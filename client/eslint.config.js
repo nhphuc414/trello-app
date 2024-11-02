@@ -37,7 +37,14 @@ export default [
       'react-hooks/exhaustive-deps': 'warn',
       'react/prop-types': 0,
       'react/display-name': 0,
-
+      //mui
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: ['@mui/*/*/*']
+        }
+      ],
+      //common
       'no-console': 1,
       'no-lonely-if': 1,
       'no-unused-vars': 1,
