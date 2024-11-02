@@ -6,7 +6,13 @@ const createNew = async (req, res) => {
 }
 const update = async (req, res) => {
   const cardCoverFile = req.file
-  const card = await cardService.update(req.params.id, req.body, cardCoverFile)
+  const userInfo = req.jwtDecoded
+  const card = await cardService.update(
+    req.params.id,
+    req.body,
+    cardCoverFile,
+    userInfo
+  )
   res.status(StatusCodes.OK).json(card)
 }
 
