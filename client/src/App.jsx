@@ -1,21 +1,14 @@
-import Button from '@mui/material/Button'
-import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms'
 import { useColorScheme } from '@mui/material/styles'
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  useMediaQuery
-} from '@mui/material'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import LightModeIcon from '@mui/icons-material/LightMode'
-
+import theme from './theme'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness'
-import { Box } from '@mui/system'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
 function App() {
-  const { mode, setMode } = useColorScheme()
   const ModeSelect = () => {
+    const { mode, setMode } = useColorScheme()
     const handleChange = (event) => {
       setMode(event.target.value)
     }
@@ -32,47 +25,61 @@ function App() {
         >
           <MenuItem value='light'>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <LightModeIcon /> Light
+              <LightModeIcon fontSize='small' /> Light
             </div>
           </MenuItem>
           <MenuItem value='dark'>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <DarkModeOutlinedIcon /> Dark
+              <DarkModeOutlinedIcon fontSize='small' /> Dark
             </Box>
           </MenuItem>
           <MenuItem value='system'>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <SettingsBrightnessIcon /> System
+              <SettingsBrightnessIcon fontSize='small' /> System
             </Box>
           </MenuItem>
         </Select>
       </FormControl>
     )
   }
-  function ModeToggle() {
-    const { mode, setMode } = useColorScheme()
-    return (
-      <Button
-        onClick={() => {
-          setMode(mode === 'light' ? 'dark' : 'light')
+  return (
+    <Container sx={{ height: '100vh', backgroundColor: 'primary.main' }}>
+      <Box
+        sx={{
+          backgroundColor: 'primary.light',
+          width: '100%',
+          height: (theme) => theme.trello.appBarHeight,
+          display: 'flex',
+          alignItems: 'center'
         }}
       >
-        {mode === 'light' ? 'Turn dark' : 'Turn light'}
-      </Button>
-    )
-  }
-  return (
-    <>
-      <hr />
-      <ModeSelect />
-      <hr />
-      <ModeToggle />
-      <div>Hello</div>
-      <Button variant='text'>Text</Button>
-      <Button variant='contained'>Contained</Button>
-      <Button variant='outlined'>Outlined</Button>
-      <AccessAlarmsIcon />
-    </>
+        <ModeSelect />
+      </Box>
+      <Box
+        sx={{
+          backgroundColor: 'primary.dark',
+          width: '100%',
+          height: (theme) => theme.trello.boardBarHeight,
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        Boardbar
+      </Box>
+      <Box
+        sx={{
+          backgroundColor: 'primary.main',
+          width: '100%',
+          height: (theme) =>
+            `calc(100vh - ${theme.trello.appBarHeight} - ${theme.trello.boardBarHeight})`,
+          display: 'flex',
+          alignItems: 'center'
+        }}
+        s
+      >
+        Board Content
+      </Box>
+    </Container>
   )
 }
 
