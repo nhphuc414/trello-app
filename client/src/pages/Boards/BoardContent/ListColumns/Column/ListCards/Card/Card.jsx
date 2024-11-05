@@ -7,7 +7,14 @@ import Button from '@mui/material/Button'
 import CommentIcon from '@mui/icons-material/Comment'
 import AttachmentIcon from '@mui/icons-material/Attachment'
 import GroupIcon from '@mui/icons-material/Group'
-function Card() {
+function Card({ card }) {
+  const shouldShowCardActions = () => {
+    return (
+      !!card?.comments?.length ||
+      !!card?.memberIds?.length ||
+      !!card?.attachments?.length
+    )
+  }
   return (
     <MuiCard
       sx={{
@@ -16,25 +23,29 @@ function Card() {
         overflow: 'unset'
       }}
     >
-      <CardMedia
-        sx={{ height: 140 }}
-        image='https://img.pokemondb.net/artwork/large/charizard.jpg'
-        title='green iguana'
-      />
+      {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
       <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 } }}>
-        <Typography>Mern Stack</Typography>
+        <Typography>{card?.title}</Typography>
       </CardContent>
-      <CardActions sx={{ p: '0 4px 8px 4px' }}>
-        <Button size='small' startIcon={<GroupIcon />}>
-          20
-        </Button>
-        <Button size='small' startIcon={<CommentIcon />}>
-          15
-        </Button>
-        <Button size='small' startIcon={<AttachmentIcon />}>
-          10
-        </Button>
-      </CardActions>
+      {shouldShowCardActions() && (
+        <CardActions sx={{ p: '0 4px 8px 4px' }}>
+          {!!card?.memberIds?.length && (
+            <Button size='small' startIcon={<GroupIcon />}>
+              {card?.memberIds?.length}
+            </Button>
+          )}
+          {!!card?.comments?.length && (
+            <Button size='small' startIcon={<CommentIcon />}>
+              {card?.comments?.length}
+            </Button>
+          )}
+          {!!card?.attachments?.length && (
+            <Button size='small' startIcon={<AttachmentIcon />}>
+              {card?.attachments?.length}
+            </Button>
+          )}
+        </CardActions>
+      )}
     </MuiCard>
   )
 }
