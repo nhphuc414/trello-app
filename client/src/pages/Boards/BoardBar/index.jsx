@@ -35,9 +35,12 @@ function BoardBar() {
         justifyContent: 'space-between',
         gap: 2,
         overflowX: 'auto',
+        '&::-webkit-scrollbar-track': { m: 1 },
         bgcolor: (theme) =>
           theme.palette.mode === 'dark' ? '#34495e' : '#1976d2',
-        borderBottom: '1px solid #00bfa5'
+        borderBottom: '1px solid',
+        borderColor: (theme) =>
+          theme.palette.mode === 'dark' ? '#2c3e50' : '#1565c0'
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -94,7 +97,10 @@ function BoardBar() {
               width: '34px',
               height: '34px',
               fontSize: '16px',
-              border: 'none'
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              '&:first-of-type': { bgcolor: '#a4b0be' }
             }
           }}
         >
@@ -102,6 +108,24 @@ function BoardBar() {
             <Avatar
               alt='Avatar'
               src='https://res.cloudinary.com/dm5nn54wh/image/upload/v1715756788/llvfrs79yiwk1ypovlbj.jpg'
+            />
+          </Tooltip>
+          <Tooltip title='avatar'>
+            <Avatar
+              alt='Avatar'
+              src='https://res.cloudinary.com/dm5nn54wh/image/upload/v1716093841/mbmwcwdzpf01yaso7ofx.jpg'
+            />
+          </Tooltip>
+          <Tooltip title='avatar'>
+            <Avatar
+              alt='Avatar'
+              src='https://res.cloudinary.com/dm5nn54wh/image/upload/v1716093841/mbmwcwdzpf01yaso7ofx.jpg'
+            />
+          </Tooltip>
+          <Tooltip title='avatar'>
+            <Avatar
+              alt='Avatar'
+              src='https://res.cloudinary.com/dm5nn54wh/image/upload/v1716093841/mbmwcwdzpf01yaso7ofx.jpg'
             />
           </Tooltip>
           <Tooltip title='avatar'>

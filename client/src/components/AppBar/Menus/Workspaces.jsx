@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import MenuList from '@mui/material/MenuList'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
@@ -44,42 +43,40 @@ function Workspaces() {
           'aria-labelledby': 'basic-button-workspaces'
         }}
       >
-        <MenuList>
-          <MenuItem>
-            <ListItemIcon>
-              <ContentCut fontSize='small' />
-            </ListItemIcon>
-            <ListItemText>Cut</ListItemText>
-            <Typography variant='body2' color='text.secondary'>
-              ⌘X
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <ListItemIcon>
-              <ContentCopy fontSize='small' />
-            </ListItemIcon>
-            <ListItemText>Copy</ListItemText>
-            <Typography variant='body2' color='text.secondary'>
-              ⌘C
-            </Typography>
-          </MenuItem>
-          <MenuItem>
-            <ListItemIcon>
-              <ContentPaste fontSize='small' />
-            </ListItemIcon>
-            <ListItemText>Paste</ListItemText>
-            <Typography variant='body2' color='text.secondary'>
-              ⌘V
-            </Typography>
-          </MenuItem>
-          <Divider />
-          <MenuItem>
-            <ListItemIcon>
-              <Cloud fontSize='small' />
-            </ListItemIcon>
-            <ListItemText>Web Clipboard</ListItemText>
-          </MenuItem>
-        </MenuList>
+        <MenuItem>
+          <ListItemIcon>
+            <ContentCut fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>Cut</ListItemText>
+          <Typography variant='body2' color='text.secondary'>
+            ⌘X
+          </Typography>
+        </MenuItem>
+        <MenuItem>
+          <ListItemIcon>
+            <ContentCopy fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>Copy</ListItemText>
+          <Typography variant='body2' color='text.secondary'>
+            ⌘C
+          </Typography>
+        </MenuItem>
+        <MenuItem>
+          <ListItemIcon>
+            <ContentPaste fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>Paste</ListItemText>
+          <Typography variant='body2' color='text.secondary'>
+            ⌘V
+          </Typography>
+        </MenuItem>
+        <Divider />
+        <MenuItem>
+          <ListItemIcon>
+            <Cloud fontSize='small' />
+          </ListItemIcon>
+          <ListItemText>Web Clipboard</ListItemText>
+        </MenuItem>
       </Menu>
     </Box>
   )
