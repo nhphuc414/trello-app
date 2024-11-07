@@ -9,7 +9,11 @@ const update = async (req, res) => {
   res.status(StatusCodes.OK).json(board)
 }
 const getDetails = async (req, res) => {
-  const board = await boardService.getDetails(req.jwtDecoded._id, req.params.id)
+  //req.jwtDecoded._id
+  const board = await boardService.getDetails(
+    '672c6f4cf1570d8bc78eaa97',
+    req.params.id
+  )
   res.status(StatusCodes.OK).json(board)
 }
 const moveCardToDifferentColumn = async (req, res) => {

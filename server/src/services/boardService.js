@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
+import { cloneDeep } from 'lodash'
 import { boardModel } from '~/models/boardModel'
 import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
@@ -32,11 +33,14 @@ const update = async (id, data) => {
 const getDetails = async (userId, boardId) => {
   const board = await boardModel.getDetails(userId, boardId)
   if (!board) throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found!')
-  // const resBoard = cloneDeep(board)
-  // resBoard.columns.forEach((column) => {
-  //   column.cards = resBoard.cards.filter((card) => card.columnId === column._id)
-  // })
-  return board
+  const resBoard = cloneDeep(board)
+  resBoard.columns.forEach((column) => {
+    column.cards = resBoard.cards.filter((card) => {
+      return card.columnId.equals(column._id)
+    })
+  })
+  delete resBoard.cards
+  return resBoard
 }
 const moveCardToDifferentColumn = async (data) => {
   await columnModel.update(data.prevColumnId, {

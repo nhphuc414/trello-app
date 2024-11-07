@@ -8,7 +8,7 @@ import { WEBSITE_DOMAIN } from '~/utils/constants'
 import { BrevoProvider } from '~/providers/BrevoProvider'
 import { JwtProvider } from '~/providers/JwtProvider'
 import { env } from '~/config/environment'
-import { CloudinaryProvider } from '~/providers/cloudinaryProvider'
+import { CloudinaryProvider } from '~/providers/CloudinaryProvider'
 const createNew = async (data) => {
   const existUser = await userModel.findOneByEmail(data.email)
   if (existUser)

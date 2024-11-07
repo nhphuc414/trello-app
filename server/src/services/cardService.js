@@ -1,6 +1,6 @@
 import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
-import { CloudinaryProvider } from '~/providers/cloudinaryProvider'
+import { CloudinaryProvider } from '~/providers/CloudinaryProvider'
 
 const createNew = async (data) => {
   const createdCard = await cardModel.createNew(data)

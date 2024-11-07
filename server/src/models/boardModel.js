@@ -73,7 +73,7 @@ const pushColumnOrderIds = async (column) => {
         {
           _id: new ObjectId(`${column.boardId}`)
         },
-        { $pull: { columnOrderIds: new ObjectId(`${column._id}`) } },
+        { $push: { columnOrderIds: new ObjectId(`${column._id}`) } },
         { returnDocument: 'after' }
       )) || null
   )
@@ -86,7 +86,7 @@ const pullColumnOrderIds = async (column) => {
         {
           _id: new ObjectId(`${column.boardId}`)
         },
-        { $push: { columnOrderIds: new ObjectId(`${column._id}`) } },
+        { $pull: { columnOrderIds: new ObjectId(`${column._id}`) } },
         { returnDocument: 'after' }
       )) || null
   )

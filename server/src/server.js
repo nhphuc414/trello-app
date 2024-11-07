@@ -14,7 +14,8 @@ const START_SERVER = () => {
   app.use(express.json())
   app.use('/v1', APIs_V1)
   app.use(errorHandlingMiddleware)
-   // Môi trường Production
+
+
   if (env.BUILD_MODE === 'production') {
     app.listen(env.PORT, () => {
       console.log(`Production: Hi ${env.AUTHOR}, Back-end Server is running successfully at Port: ${env.PORT}`)
