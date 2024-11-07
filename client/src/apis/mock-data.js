@@ -16,10 +16,10 @@ export const mockData = {
           'card-id-02',
           'card-id-03',
           'card-id-04',
+          'card-id-01',
           'card-id-05',
           'card-id-06',
-          'card-id-07',
-          'card-id-01'
+          'card-id-07'
         ],
         cards: [
           {
@@ -110,7 +110,7 @@ export const mockData = {
         _id: 'column-id-02',
         boardId: 'board-id-01',
         title: 'Inprogress Column 02',
-        cardOrderIds: ['card-id-08', 'card-id-09', 'card-id-10'],
+        cardOrderIds: ['card-id-010', 'card-id-09', 'card-id-8'],
         cards: [
           {
             _id: 'card-id-08',
@@ -151,7 +151,7 @@ export const mockData = {
         _id: 'column-id-03',
         boardId: 'board-id-01',
         title: 'Done Column 03',
-        cardOrderIds: ['card-id-11', 'card-id-12', 'card-id-13'],
+        cardOrderIds: ['card-id-13', 'card-id-11', 'card-id-12'],
         cards: [
           {
             _id: 'card-id-11',
