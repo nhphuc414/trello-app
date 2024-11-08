@@ -24,7 +24,16 @@ import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { toast } from 'react-toastify'
+import { createNewCardAPI, deleteColumnDetailsAPI } from '~/apis'
+import { cloneDeep } from 'lodash'
+import {
+  selectCurrentActiveBoard,
+  updateCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
+import { useDispatch, useSelector } from 'react-redux'
 function Column({ column }) {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
   const {
     attributes,
     listeners,
@@ -43,23 +52,56 @@ function Column({ column }) {
     height: '100%',
     opacity: isDragging ? 0.5 : undefined
   }
+  //
   const [anchorEl, setAnchorEl] = useState(null)
   const handleClick = (event) => setAnchorEl(event.currentTarget)
   const handleClose = () => setAnchorEl(null)
+  const open = Boolean(anchorEl)
+  //
   const orderedCard = mapOrder(column?.cards, column?.cardOrderIds, '_id')
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
   const [newCardTitle, setNewCardTitle] = useState('')
-  const addNewCard = () => {
+  //
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter card title!', { position: 'bottom-right' })
       return
     }
+    const data = {
+      title: newCardTitle,
+      columnId: column._id,
+      boardId: board._id
+    }
+    const createdCard = await createNewCardAPI(data)
+
+    const newBoard = cloneDeep(board)
+    const columnToUpdate = newBoard.columns.find(
+      (column) => column._id === createdCard.columnId
+    )
+    if (columnToUpdate) {
+      columnToUpdate.cards = [createdCard]
+      columnToUpdate.cardOrderIds = [createdCard._id]
+    } else {
+      columnToUpdate.cards.push(createdCard)
+      columnToUpdate.cardOrderIds.push(createdCard._id)
+    }
+
+    dispatch(updateCurrentActiveBoard(newBoard))
     toggleOpenNewCardForm()
     setNewCardTitle('')
   }
-  const open = Boolean(anchorEl)
-
+  const handleDeleteColumn = async () => {
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter((c) => c._id !== column._id)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(
+      (id) => id !== column._id
+    )
+    dispatch(updateCurrentActiveBoard(newBoard))
+    deleteColumnDetailsAPI(column._id).then((res) =>
+      toast.success(res?.deleteResult)
+    )
+  } 
   return (
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
       <Box
