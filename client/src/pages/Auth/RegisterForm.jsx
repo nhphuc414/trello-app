@@ -19,7 +19,6 @@ import {
   PASSWORD_RULE,
   PASSWORD_RULE_MESSAGE
 } from '~/utils/validators'
-
 function RegisterForm() {
   const {
     register,
