@@ -27,8 +27,7 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(loginUserAPI.fulfilled, (state, action) => {
-      const user = action.payload
-      state.currentUser = user
+      state.currentUser = action.payload
     })
   }
 })

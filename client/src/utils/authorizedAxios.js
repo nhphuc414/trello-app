@@ -11,10 +11,6 @@ autorizedAxiosInstance.defaults.withCredentials = true
 autorizedAxiosInstance.interceptors.request.use(
   (config) => {
     interceptorLoadingElements(true)
-    const accessToken = localStorage.getItem('accessToken')
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`
-    }
     return config
   },
   (error) => {
@@ -40,13 +36,7 @@ autorizedAxiosInstance.interceptors.response.use(
     const originalRequest = error.config
     if (error.response?.status === 410 && originalRequest) {
       if (!refreshTokenPromise) {
-        const refreshToken = localStorage.getItem('refreshToken')
-        refreshTokenPromise = refreshTokenAPI(refreshToken)
-          .then((res) => {
-            const { accessToken } = res.data
-            localStorage.setItem('accessToken', accessToken)
-            autorizedAxiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`
-          })
+        refreshTokenPromise = refreshTokenAPI()
           .catch((_err) => {
             handleLogoutAPI().then(() => {
               location.href = '/login'

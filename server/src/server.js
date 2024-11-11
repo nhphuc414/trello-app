@@ -7,23 +7,35 @@ import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import exitHook from 'async-exit-hook'
 import { APIs_V1 } from './routes/v1'
 import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
+import morgan from 'morgan'
+import cookieParser from 'cookie-parser'
 const START_SERVER = () => {
   const app = express()
-
+  if (env.BUILD_MODE === 'dev') {
+    app.use(morgan('dev'))
+  }
+  app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store')
+    next()
+  })
+  app.use(cookieParser())
   app.use(cors(corsOptions))
   app.use(express.json())
   app.use('/v1', APIs_V1)
   app.use(errorHandlingMiddleware)
 
-
   if (env.BUILD_MODE === 'production') {
     app.listen(env.PORT, () => {
-      console.log(`Production: Hi ${env.AUTHOR}, Back-end Server is running successfully at Port: ${env.PORT}`)
+      console.log(
+        `Production: Hi ${env.AUTHOR}, Back-end Server is running successfully at Port: ${env.PORT}`
+      )
     })
   } else {
     // Môi trường Local Dev
     app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
-      console.log(`Local DEV: Hello ${env.AUTHOR}, Back-end Server is running successfully at Host: ${env.LOCAL_DEV_APP_HOST} and Port: ${env.LOCAL_DEV_APP_PORT}`)
+      console.log(
+        `Local DEV: Hello ${env.AUTHOR}, Back-end Server is running successfully at Host: ${env.LOCAL_DEV_APP_HOST} and Port: ${env.LOCAL_DEV_APP_PORT}`
+      )
     })
   }
   exitHook(() => {
