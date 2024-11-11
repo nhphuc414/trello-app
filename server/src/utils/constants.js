@@ -1,7 +1,9 @@
 import { env } from '~/config/environment'
 
 export const WHITELIST_DOMAINS =
-  env.BUILD_MODE === 'production' ? [] : ['http://localhost:5173']
+  env.BUILD_MODE === 'production'
+    ? [env.WEBSITE_DOMAIN_PRODUCTION]
+    : [env.WEBSITE_DOMAIN_DEVELOPMENT]
 
 export const BOARD_TYPES = {
   PUBLIC: 'public',

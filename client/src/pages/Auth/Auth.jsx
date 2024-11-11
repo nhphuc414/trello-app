@@ -1,4 +1,3 @@
-// TrungQuanDev: https://youtube.com/@trungquandev
 import { useLocation } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import LoginForm from './LoginForm'
@@ -6,7 +5,6 @@ import RegisterForm from './RegisterForm'
 import bgImageUrl from '~/assets/auth/login-register-bg.jpg'
 function Auth() {
   const location = useLocation()
-  // console.log(location)
   const isLogin = location.pathname === '/login'
   const isRegister = location.pathname === '/register'
 

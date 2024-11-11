@@ -1,5 +1,4 @@
-// TrungQuanDev: https://youtube.com/@trungquandev
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Avatar from '@mui/material/Avatar'
@@ -19,6 +18,8 @@ import {
   PASSWORD_RULE,
   PASSWORD_RULE_MESSAGE
 } from '~/utils/validators'
+import { toast } from 'react-toastify'
+import { registerUserAPI } from '~/apis'
 function RegisterForm() {
   const {
     register,
@@ -26,8 +27,16 @@ function RegisterForm() {
     formState: { errors },
     watch
   } = useForm()
+  const navigate = useNavigate()
   const submitRegister = (data) => {
-    console.log(data)
+    const { email, password } = data
+    toast
+      .promise(registerUserAPI({ email, password }), {
+        pending: 'Registration is in progess...'
+      })
+      .then((user) => {
+        navigate(`/login?registeredEmail=${user.email}`)
+      })
   }
   return (
     <form onSubmit={handleSubmit(submitRegister)}>
@@ -55,9 +64,7 @@ function RegisterForm() {
               justifyContent: 'center',
               color: (theme) => theme.palette.grey[500]
             }}
-          >
-            Author: TrungQuanDev
-          </Box>
+          ></Box>
           <Box sx={{ padding: '0 1em 1em 1em' }}>
             <Box sx={{ marginTop: '1em' }}>
               <TextField
@@ -117,6 +124,7 @@ function RegisterForm() {
           </Box>
           <CardActions sx={{ padding: '0 1em 1em 1em' }}>
             <Button
+              className='interceptor-loading'
               type='submit'
               variant='contained'
               color='primary'

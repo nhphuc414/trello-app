@@ -1,5 +1,4 @@
 import Box from '@mui/material/Box'
-
 import Button from '@mui/material/Button'
 import Column from './Column/Column'
 import CloseIcon from '@mui/icons-material/Close'
@@ -134,6 +133,7 @@ function ListColumns({ columns }) {
             />
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Button
+                className='interceptor-loading'
                 onClick={addNewColumn}
                 variant='contained'
                 color='success'

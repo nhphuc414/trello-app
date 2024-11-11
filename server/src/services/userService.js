@@ -67,21 +67,24 @@ const login = async (data) => {
   if (!bcryptjs.compareSync(data.password, existUser.password))
     throw new ApiError(StatusCodes.NOT_FOUND, 'Wrong email or password!')
 
-  const userInfo = {
-    _id: existUser._id,
-    email: existUser.email
-  }
+  const userInfo = pickUser(existUser)
   const accessToken = await JwtProvider.generateToken(
-    userInfo,
+    {
+      _id: userInfo._id,
+      email: userInfo.email
+    },
     env.ACCESS_TOKEN_SECRET_SIGNATURE,
     env.ACCESS_TOKEN_LIFE
   )
   const refreshToken = await JwtProvider.generateToken(
-    userInfo,
+    {
+      _id: userInfo._id,
+      email: userInfo.email
+    },
     env.REFRESH_TOKEN_SECRET_SIGNATURE,
     env.REFRESH_TOKEN_LIFE
   )
-  return { accessToken, refreshToken, ...pickUser(existUser) }
+  return { accessToken, refreshToken, userInfo }
 }
 const refreshToken = async (data) => {
   const refreshTokenDecoded = await JwtProvider.verifyToken(

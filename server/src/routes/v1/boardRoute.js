@@ -14,7 +14,7 @@ Router.route('/')
   )
 Router.route('/:id')
   .get(
-    // authMiddleware.isAuthorized,
+    authMiddleware.isAuthorized,
     asyncMiddleware(boardController.getDetails)
   )
   .put(

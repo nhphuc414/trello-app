@@ -79,7 +79,7 @@ function Column({ column }) {
     const columnToUpdate = newBoard.columns.find(
       (column) => column._id === createdCard.columnId
     )
-    if (columnToUpdate) {
+    if (!columnToUpdate) {
       columnToUpdate.cards = [createdCard]
       columnToUpdate.cardOrderIds = [createdCard._id]
     } else {
@@ -101,7 +101,7 @@ function Column({ column }) {
     deleteColumnDetailsAPI(column._id).then((res) =>
       toast.success(res?.deleteResult)
     )
-  } 
+  }
   return (
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
       <Box
@@ -275,6 +275,7 @@ function Column({ column }) {
               />
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Button
+                  className='interceptor-loading'
                   onClick={addNewCard}
                   variant='contained'
                   color='success'
