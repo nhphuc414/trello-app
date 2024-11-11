@@ -14,22 +14,27 @@ import 'react-toastify/dist/ReactToastify.css'
 // Config Redux store
 import { Provider } from 'react-redux'
 import { store } from '~/redux/store'
+//Config react-router-dom with BrowserRouter
 import { BrowserRouter } from 'react-router-dom'
 
-//Config react-router-dom with BrowserRouter
-
+//Config Redux-Persist
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistStore } from 'redux-persist'
+const persistor = persistStore(store)
 createRoot(document.getElementById('root')).render(
   <BrowserRouter basename='/'>
     <Provider store={store}>
-      <CssVarsProvider theme={theme}>
-        <CssBaseline />
-        <App />
-        <ToastContainer
-          position='bottom-left'
-          theme='colored'
-          autoClose={2000}
-        />
-      </CssVarsProvider>
+      <PersistGate persistor={persistor}>
+        <CssVarsProvider theme={theme}>
+          <CssBaseline />
+          <App />
+          <ToastContainer
+            position='bottom-left'
+            theme='colored'
+            autoClose={2000}
+          />
+        </CssVarsProvider>
+      </PersistGate>
     </Provider>
   </BrowserRouter>
 )
