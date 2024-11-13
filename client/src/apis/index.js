@@ -38,10 +38,6 @@ export const refreshTokenAPI = async () => {
   )
   return res.data
 }
-export const handleLogoutAPI = async () => {
-  const res = await autorizedAxiosInstance.delete(`${API_ROOT}/v1/users/logout`)
-  return res
-}
 //Board
 export const updateBoardDetailsAPI = async (id, data) => {
   const res = await autorizedAxiosInstance.put(

@@ -4,6 +4,7 @@ import App from './App.jsx'
 // Config Material UI
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
+import GlobalStyles from '@mui/material/GlobalStyles'
 import theme from './theme.js'
 //Config React Toastify
 import { ToastContainer } from 'react-toastify'
@@ -39,6 +40,7 @@ createRoot(document.getElementById('root')).render(
               }
             }}
           >
+            <GlobalStyles styles={{ a: { textDecoration: 'none' } }} />
             <CssBaseline />
             <App />
             <ToastContainer
