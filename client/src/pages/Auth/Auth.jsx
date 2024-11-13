@@ -3,11 +3,11 @@ import Box from '@mui/material/Box'
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
 import bgImageUrl from '~/assets/auth/login-register-bg.jpg'
+
 function Auth() {
   const location = useLocation()
   const isLogin = location.pathname === '/login'
   const isRegister = location.pathname === '/register'
-
   return (
     <Box
       sx={{
