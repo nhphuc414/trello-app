@@ -67,9 +67,16 @@ function AccountTab() {
     }
     let reqData = new FormData()
     reqData.append('avatar', e.target?.files[0])
-    for (const value of reqData.values()) {
-      console.log('reqData Value: ', value)
-    }
+    toast
+      .promise(dispatch(updateUserAPI(reqData)), {
+        pending: 'Updating...'
+      })
+      .then((res) => {
+        if (!res.error) {
+          toast.success('Avatar updated successfully!')
+        }
+      })
+    e.target.value = ''
   }
 
   return (
@@ -97,15 +104,23 @@ function AccountTab() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            justifyContent: 'center',
             gap: 1
           }}
         >
           <Avatar
             sx={{ width: 90, height: 90 }}
-            alt='TrungQuanDev'
+            alt='avatar'
             src={currentUser?.avatar}
           />
-          <Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
             <Typography variant='h5'>{currentUser?.displayName}</Typography>
             <Typography sx={{ color: 'grey' }}>
               @{currentUser?.username}
