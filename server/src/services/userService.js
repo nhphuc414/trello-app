@@ -87,20 +87,24 @@ const login = async (data) => {
   return { accessToken, refreshToken, userInfo }
 }
 const refreshToken = async (data) => {
-  const refreshTokenDecoded = await JwtProvider.verifyToken(
-    data,
-    env.REFRESH_TOKEN_SECRET_SIGNATURE
-  )
-  const userInfo = {
-    _id: refreshTokenDecoded._id,
-    email: refreshTokenDecoded.email
+  try {
+    const refreshTokenDecoded = await JwtProvider.verifyToken(
+      data,
+      env.REFRESH_TOKEN_SECRET_SIGNATURE
+    )
+    const userInfo = {
+      _id: refreshTokenDecoded._id,
+      email: refreshTokenDecoded.email
+    }
+    const accessToken = await JwtProvider.generateToken(
+      userInfo,
+      env.ACCESS_TOKEN_SECRET_SIGNATURE,
+      env.ACCESS_TOKEN_LIFE
+    )
+    return { accessToken }
+  } catch (error) {
+    throw new ApiError(StatusCodes.FORBIDDEN, 'Please Sign in!')
   }
-  const accessToken = await JwtProvider.generateToken(
-    userInfo,
-    env.ACCESS_TOKEN_SECRET_SIGNATURE,
-    env.ACCESS_TOKEN_LIFE
-  )
-  return { accessToken }
 }
 const updateUser = async (id, data, userAvatarFile) => {
   const existUser = await userModel.findOneById(id)

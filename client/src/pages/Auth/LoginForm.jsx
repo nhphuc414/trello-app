@@ -65,24 +65,17 @@ function LoginForm() {
           </Box>
           <Box
             sx={{
+              marginTop: '1em',
               display: 'flex',
+              flexDirection: 'column',
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              color: (theme) => theme.palette.grey[500]
             }}
           >
-            <Box
-              sx={{
-                marginTop: '1em',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                color: (theme) => theme.palette.grey[500]
-              }}
-            >
-              <Box>Test Account: test@gmail.com</Box>
-              <Box>Password: 1234567a</Box>
-            </Box>
+            <Box>Test Account</Box>
+            <Box>test@gmail.com</Box>
+            <Box>1234567a</Box>
           </Box>
           <Box
             sx={{

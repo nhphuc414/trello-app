@@ -33,7 +33,10 @@ export const verifyUserAPI = async (data) => {
   return res.data
 }
 export const refreshTokenAPI = async () => {
-  return await autorizedAxiosInstance.put(`${API_ROOT}/v1/users/refresh_token`)
+  const res = await autorizedAxiosInstance.put(
+    `${API_ROOT}/v1/users/refresh_token`
+  )
+  return res.data
 }
 export const handleLogoutAPI = async () => {
   const res = await autorizedAxiosInstance.delete(`${API_ROOT}/v1/users/logout`)

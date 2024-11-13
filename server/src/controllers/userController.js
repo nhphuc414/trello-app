@@ -31,21 +31,14 @@ const login = async (req, res) => {
 }
 
 const refreshToken = async (req, res) => {
-  const refreshTokenFromCookie = req.cookies?.refreshToken
-  try {
-    const result = await userService.refreshToken(refreshTokenFromCookie)
-    res.cookie('accessToken', result.accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      maxAge: ms('14 days')
-    })
-    res.status(StatusCodes.OK).json(result)
-  } catch (error) {
-    return res
-      .status(StatusCodes.UNAUTHORIZED)
-      .json({ message: 'Unauthorized! Please login!' })
-  }
+  const result = await userService.refreshToken(req.cookies?.refreshToken)
+  res.cookie('accessToken', result.accessToken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: ms('14 days')
+  })
+  res.status(StatusCodes.OK).json(result)
 }
 const logout = async (req, res) => {
   res.clearCookie('accessToken')

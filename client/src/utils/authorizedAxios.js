@@ -1,8 +1,13 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { handleLogoutAPI, refreshTokenAPI } from '~/apis'
+import {  refreshTokenAPI } from '~/apis'
 import { interceptorLoadingElements } from './formatters'
+import {  logoutUserAPI } from '~/redux/user/userSlice'
 
+let axiosReduxStore
+export const injectStore = (mainStore) => {
+  axiosReduxStore = mainStore
+}
 let autorizedAxiosInstance = axios.create()
 let refreshTokenPromise = null
 autorizedAxiosInstance.defaults.timeout = 1000 * 60 * 10
@@ -24,23 +29,16 @@ autorizedAxiosInstance.interceptors.response.use(
   },
   (error) => {
     interceptorLoadingElements(false)
-    let errorMessage = error?.message
-    if (error.response?.data?.message) {
-      errorMessage = error.response?.data?.message
-    }
     if (error.response?.status === 401) {
-      handleLogoutAPI().then(() => {
-        location.href('/login')
-      })
+      axiosReduxStore.dispatch(logoutUserAPI(false))
     }
-    const originalRequest = error.config
-    if (error.response?.status === 410 && originalRequest) {
+    const originalRequests = error.config
+    if (error.response?.status === 410 && originalRequests) {
       if (!refreshTokenPromise) {
         refreshTokenPromise = refreshTokenAPI()
+          .then((data) => data?.accessToken)
           .catch((_err) => {
-            handleLogoutAPI().then(() => {
-              location.href = '/login'
-            })
+            axiosReduxStore.dispatch(logoutUserAPI(false))
             return Promise.reject(_err)
           })
           .finally(() => {
@@ -48,8 +46,12 @@ autorizedAxiosInstance.interceptors.response.use(
           })
       }
       return refreshTokenPromise.then(() => {
-        return autorizedAxiosInstance(originalRequest)
+        return autorizedAxiosInstance(originalRequests)
       })
+    }
+    let errorMessage = error?.message
+    if (error.response?.data?.message) {
+      errorMessage = error.response?.data?.message
     }
     if (error.response?.status !== 410) {
       toast.error(errorMessage)

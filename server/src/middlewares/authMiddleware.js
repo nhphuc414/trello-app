@@ -1,13 +1,15 @@
 import { StatusCodes } from 'http-status-codes'
 import { env } from '~/config/environment'
 import { JwtProvider } from '~/providers/JwtProvider'
+import ApiError from '~/utils/ApiError'
 
 const isAuthorized = async (req, res, next) => {
   const accessTokenFromCookie = req.cookies?.accessToken
   if (!accessTokenFromCookie) {
-    return res
-      .status(StatusCodes.UNAUTHORIZED)
-      .json({ message: 'Unauthorized! (Token not found!)' })
+    next(
+      new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized! (Token not found!)')
+    )
+    return
   }
   try {
     req.jwtDecoded = await JwtProvider.verifyToken(
@@ -17,13 +19,10 @@ const isAuthorized = async (req, res, next) => {
     next()
   } catch (error) {
     if (error?.message?.includes('jwt expired')) {
-      return res
-        .status(StatusCodes.GONE)
-        .json({ message: 'Need to refresh token' })
+      next(new ApiError(StatusCodes.GONE, 'Need to refresh token'))
+      return
     }
-    return res
-      .status(StatusCodes.UNAUTHORIZED)
-      .json({ message: 'Unauthorized! Please login!' })
+    next(new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized! Please login!'))
   }
 }
 
