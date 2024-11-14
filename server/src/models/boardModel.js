@@ -148,7 +148,7 @@ const getDetails = async (userId, boardId) => {
     .toArray()
   return result[0] || null
 }
-const getBoards = async (userId, page, itemsPerPage) => {
+const getBoards = async (userId, page, itemsPerPage, sortBy) => {
   const queryConditions = [
     {
       _destroy: false
@@ -160,13 +160,19 @@ const getBoards = async (userId, page, itemsPerPage) => {
       ]
     }
   ]
+  let sortCriteria
+  if (sortBy === 'alphabet') {
+    sortCriteria = { title: 1 }
+  } else {
+    sortCriteria = { createdAt: -1 }
+  }
   const query = await GET_DB()
     .collection(BOARD_COLLECTION_NAME)
     .aggregate(
       [
         { $match: { $and: queryConditions } },
         {
-          $sort: { title: 1 }
+          $sort: sortCriteria
         },
         {
           $facet: {

@@ -4,7 +4,11 @@ import { boardModel } from '~/models/boardModel'
 import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
 import ApiError from '~/utils/ApiError'
-import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from '~/utils/constants'
+import {
+  DEFAULT_ITEMS_PER_PAGE,
+  DEFAULT_PAGE,
+  DEFAULT_SORT_BY
+} from '~/utils/constants'
 import { slugify } from '~/utils/formatters'
 
 const createNew = async (userId, data) => {
@@ -56,13 +60,15 @@ const moveCardToDifferentColumn = async (data) => {
   })
   return { updateResullt: 'Successfully!' }
 }
-const getBoards = async (userId, page, itemsPerPage) => {
+const getBoards = async (userId, page, itemsPerPage, sortBy) => {
   if (!page) page = DEFAULT_PAGE
   if (!itemsPerPage) itemsPerPage = DEFAULT_ITEMS_PER_PAGE
+  if (!sortBy) sortBy = DEFAULT_SORT_BY
   return await boardModel.getBoards(
     userId,
     parseInt(page, 10),
-    parseInt(itemsPerPage, 10)
+    parseInt(itemsPerPage, 10),
+    sortBy
   )
 }
 export const boardService = {
