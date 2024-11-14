@@ -15,8 +15,6 @@ function ToggleFocusInput({
       setInputValue(value)
       return
     }
-    console.log('value: ', value)
-    console.log('inputValue: ', inputValue)
     onChangedValue(inputValue)
   }
   return (

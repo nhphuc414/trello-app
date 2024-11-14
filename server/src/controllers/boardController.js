@@ -5,7 +5,10 @@ const createNew = async (req, res) => {
   res.status(StatusCodes.CREATED).json(newBoard)
 }
 const update = async (req, res) => {
-  const board = await boardService.update(req.params.id, req.body)
+  const board = await boardService.update(
+    req.jwtDecoded._id, req.params.id,
+    req.body
+  )
   res.status(StatusCodes.OK).json(board)
 }
 const getDetails = async (req, res) => {

@@ -22,7 +22,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
-function BoardContent({ board }) {
+function BoardContent({ board, moveColumns, moveCardInTheSameColumn }) {
   const [orderedColumns, setOrderedColumns] = useState([])
 
   const [activeDragItemId, setActiveDragItemId] = useState(null)
@@ -190,7 +190,7 @@ function BoardContent({ board }) {
         const newCardIndex = overColumn?.cardOrderIds?.findIndex(
           (id) => id === overCardId
         )
-        const dndOrderedCards = arrayMove(
+        const dndCardOrderIds = arrayMove(
           oldColumn?.cardOrderIds,
           oldCardIndex,
           newCardIndex
@@ -200,9 +200,10 @@ function BoardContent({ board }) {
           const targetColumn = nextColumns?.find(
             (c) => c._id === overColumn._id
           )
-          targetColumn.cardOrderIds = dndOrderedCards
+          targetColumn.cardOrderIds = dndCardOrderIds
           return nextColumns
         })
+        moveCardInTheSameColumn(dndCardOrderIds, oldColumn._id)
       }
     }
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
@@ -219,6 +220,7 @@ function BoardContent({ board }) {
           oldColumnIndex,
           newColumnIndex
         )
+        moveColumns(dndOrderedColumns)
         // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
         setOrderedColumns(dndOrderedColumns)
       }
