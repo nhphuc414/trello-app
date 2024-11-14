@@ -17,6 +17,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 
 import { styled } from '@mui/material/styles'
+import { createNewBoardAPI } from '~/apis'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -40,7 +41,7 @@ const BOARD_TYPES = {
   PRIVATE: 'private'
 }
 
-function SidebarCreateBoardModal() {
+function SidebarCreateBoardModal({ afterCreateNewBoard }) {
   const {
     control,
     register,
@@ -48,7 +49,6 @@ function SidebarCreateBoardModal() {
     reset,
     formState: { errors }
   } = useForm()
-
   const [isOpen, setIsOpen] = useState(false)
   const handleOpenModal = () => setIsOpen(true)
   const handleCloseModal = () => {
@@ -57,12 +57,11 @@ function SidebarCreateBoardModal() {
   }
 
   const submitCreateNewBoard = (data) => {
-    const { title, description, type } = data
-    console.log('Board title: ', title)
-    console.log('Board description: ', description)
-    console.log('Board type: ', type)
+    createNewBoardAPI(data).then(() => {
+      handleCloseModal()
+      afterCreateNewBoard()
+    })
   }
-
   return (
     <>
       <SidebarItem onClick={handleOpenModal}>

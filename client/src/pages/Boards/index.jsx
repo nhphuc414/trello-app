@@ -58,6 +58,13 @@ function Boards() {
   const itemsPerPage = useRef(DEFAULT_ITEMS_PER_PAGE)
   const location = useLocation()
   const navigate = useNavigate()
+
+  const updateStateData = (res) => {
+    setData({
+      boards: res.boards || [],
+      totalBoards: res.totalBoards || 0
+    })
+  }
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const pageParam = parseInt(params.get('page'), 10) || DEFAULT_PAGE
@@ -67,13 +74,11 @@ function Boards() {
     page.current = pageParam
     sortBy.current = sortByParam
     itemsPerPage.current = itemsPerPageParam
-    fetchBoardsAPI(location.search).then((res) => {
-      setData({
-        boards: res.boards || [],
-        totalBoards: res.totalBoards || 0
-      })
-    })
+    fetchBoardsAPI(location.search).then(updateStateData)
   }, [location.search])
+  const afterCreateNewBoard = () => {
+    fetchBoardsAPI(location.search).then(updateStateData)
+  }
   const handlePageChange = (event, value) => {
     setData(null)
     navigate(
@@ -114,7 +119,9 @@ function Boards() {
             </Stack>
             <Divider sx={{ my: 1 }} />
             <Stack direction='column' spacing={1}>
-              <SidebarCreateBoardModal />
+              <SidebarCreateBoardModal
+                afterCreateNewBoard={afterCreateNewBoard}
+              />
             </Stack>
           </Grid>
 
@@ -141,11 +148,11 @@ function Boards() {
                   </Select>
                 </FormControl>
                 <FormControl sx={{ ml: 2, minWidth: 120 }}>
-                  <InputLabel>Item Per Page</InputLabel>
+                  <InputLabel>Items Per Page</InputLabel>
                   <Select
                     value={itemsPerPage.current}
                     onChange={handleItemPerPageChange}
-                    label='Item Per Page'
+                    label='Items Per Page'
                   >
                     <MenuItem value='6'>6</MenuItem>
                     <MenuItem value='12'>12</MenuItem>
