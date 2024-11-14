@@ -39,6 +39,12 @@ export const refreshTokenAPI = async () => {
   return res.data
 }
 //Board
+export const fetchBoardsAPI = async (searchPath) => {
+  const res = await autorizedAxiosInstance.get(
+    `${API_ROOT}/v1/boards${searchPath}`
+  )
+  return res.data
+}
 export const updateBoardDetailsAPI = async (id, data) => {
   const res = await autorizedAxiosInstance.put(
     `${API_ROOT}/v1/boards/${id}`,
