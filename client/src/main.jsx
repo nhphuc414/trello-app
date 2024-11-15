@@ -17,12 +17,12 @@ import { BrowserRouter } from 'react-router-dom'
 //Config Redux-Persist
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistStore } from 'redux-persist'
+//Confirm dialog
 import { ConfirmProvider } from 'material-ui-confirm'
 const persistor = persistStore(store)
 //Inject Store
 import { injectStore } from './utils/authorizedAxios.js'
 injectStore(store)
-
 createRoot(document.getElementById('root')).render(
   <BrowserRouter basename='/'>
     <Provider store={store}>
@@ -35,7 +35,6 @@ createRoot(document.getElementById('root')).render(
               buttonOrder: ['confirm', 'cancel'],
               cancellationButtonProps: { color: 'inherit' },
               confirmationButtonProps: {
-                color: 'secondary',
                 variant: 'outlined'
               }
             }}

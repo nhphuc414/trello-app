@@ -34,6 +34,7 @@ import {
 } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
+import { useConfirm } from 'material-ui-confirm'
 function Column({ column }) {
   const dispatch = useDispatch()
   const board = useSelector(selectCurrentActiveBoard)
@@ -82,27 +83,38 @@ function Column({ column }) {
     const columnToUpdate = newBoard.columns.find(
       (column) => column._id === createdCard.columnId
     )
-    if (columnToUpdate.cardOrderIds[0].includes('placeholder-card')) {
-      columnToUpdate.cards = [createdCard]
-      columnToUpdate.cardOrderIds = [createdCard._id]
-    } else {
-      columnToUpdate.cards.push(createdCard)
-      columnToUpdate.cardOrderIds.push(createdCard._id)
+    if (columnToUpdate) {
+      if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
     }
     dispatch(updateCurrentActiveBoard(newBoard))
     toggleOpenNewCardForm()
     setNewCardTitle('')
   }
+  const confirmDeleteColumn = useConfirm()
   const handleDeleteColumn = async () => {
-    const newBoard = { ...board }
-    newBoard.columns = newBoard.columns.filter((c) => c._id !== column._id)
-    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(
-      (id) => id !== column._id
-    )
-    dispatch(updateCurrentActiveBoard(newBoard))
-    deleteColumnDetailsAPI(column._id).then((res) =>
-      toast.success(res?.deleteResult)
-    )
+    confirmDeleteColumn({
+      title: 'Delete Column?',
+      description:
+        'This action will permantely delete your Column and its Cards! Are you sure?'
+    })
+      .then(() => {
+        const newBoard = { ...board }
+        newBoard.columns = newBoard.columns.filter((c) => c._id !== column._id)
+        newBoard.columnOrderIds = newBoard.columnOrderIds.filter(
+          (id) => id !== column._id
+        )
+        dispatch(updateCurrentActiveBoard(newBoard))
+        deleteColumnDetailsAPI(column._id).then((res) =>
+          toast.success(res?.deleteResult)
+        )
+      })
+      .catch(() => {})
   }
   const onUpdateColumnTitle = (newTitle) => {
     updateColumnDetailsAPI(column._id, { title: newTitle }).then(() => {
@@ -161,13 +173,22 @@ function Column({ column }) {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 'aria-labelledby': 'basic-button-column-dropdown'
               }}
             >
-              <MenuItem>
+              <MenuItem
+                sx={{
+                  '&:hover': {
+                    color: 'success.light',
+                    '& .add-card-icon': { color: 'success.light' }
+                  }
+                }}
+                onClick={toggleOpenNewCardForm}
+              >
                 <ListItemIcon>
-                  <AddCardIcon fontSize='small' />
+                  <AddCardIcon className='add-card-icon' fontSize='small' />
                 </ListItemIcon>
                 <ListItemText>Add new card</ListItemText>
               </MenuItem>
@@ -196,13 +217,24 @@ function Column({ column }) {
                 </ListItemIcon>
                 <ListItemText>Archive this column</ListItemText>
               </MenuItem>
-              <MenuItem>
+              <MenuItem
+                onClick={handleDeleteColumn}
+                sx={{
+                  color: 'warning.dark',
+                  '&:hover': {
+                    color: 'red',
+                    '& .delete-forever-icon': { color: 'red' }
+                  },
+                  '& .delete-forever-icon': { color: 'warning.dark' }
+                }}
+              >
                 <ListItemIcon>
-                  <DeleteForeverIcon fontSize='small' sx={{ color: 'red' }} />
+                  <DeleteForeverIcon
+                    fontSize='small'
+                    className='delete-forever-icon'
+                  />
                 </ListItemIcon>
-                <ListItemText sx={{ color: 'red' }}>
-                  Remove this column
-                </ListItemText>
+                <ListItemText>Delete this column</ListItemText>
               </MenuItem>
             </Menu>
           </Box>

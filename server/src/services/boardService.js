@@ -36,7 +36,6 @@ const update = async (userId, boardId, data) => {
 }
 const getDetails = async (userId, boardId) => {
   const board = await boardModel.getDetails(userId, boardId)
-  console.log('first')
   if (!board) throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found!')
   const resBoard = cloneDeep(board)
   resBoard.columns.forEach((column) => {
