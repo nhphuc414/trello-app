@@ -22,7 +22,6 @@ export const activeBoardSlice = createSlice({
   reducers: {
     updateCurrentActiveBoard: (state, action) => {
       const board = action.payload
-
       state.currentActiveBoard = board
     }
   },
