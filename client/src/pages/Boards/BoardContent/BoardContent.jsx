@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
-import { mapOrder } from '~/utils/sorts'
 import {
   DndContext,
   useSensor,
@@ -12,7 +11,7 @@ import {
   getFirstCollision
 } from '@dnd-kit/core'
 import { MouseSensor, TouchSensor } from '~/customLibs/DndKitSensors'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
@@ -22,8 +21,8 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
-function BoardContent({ board }) {
-  const [orderedColumns, setOrderedColumns] = useState([])
+function BoardContent({ board, moveColumns, moveCardInTheSameColumn }) {
+  const [orderedColumns, setOrderedColumns] = useState(board?.columns)
 
   const [activeDragItemId, setActiveDragItemId] = useState(null)
   const [activeDragItemType, setActiveDragItemType] = useState(null)
@@ -190,7 +189,7 @@ function BoardContent({ board }) {
         const newCardIndex = overColumn?.cardOrderIds?.findIndex(
           (id) => id === overCardId
         )
-        const dndOrderedCards = arrayMove(
+        const dndCardOrderIds = arrayMove(
           oldColumn?.cardOrderIds,
           oldCardIndex,
           newCardIndex
@@ -200,9 +199,10 @@ function BoardContent({ board }) {
           const targetColumn = nextColumns?.find(
             (c) => c._id === overColumn._id
           )
-          targetColumn.cardOrderIds = dndOrderedCards
+          targetColumn.cardOrderIds = dndCardOrderIds
           return nextColumns
         })
+        moveCardInTheSameColumn(dndCardOrderIds, oldColumn._id)
       }
     }
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
@@ -219,8 +219,8 @@ function BoardContent({ board }) {
           oldColumnIndex,
           newColumnIndex
         )
-        // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
         setOrderedColumns(dndOrderedColumns)
+        moveColumns(dndOrderedColumns)
       }
     }
     setActiveDragItemId(null)
@@ -228,15 +228,6 @@ function BoardContent({ board }) {
     setActiveDragItemData(null)
     setOldColumn(null)
   }
-  useEffect(() => {
-    const orderedColumns = mapOrder(
-      board?.columns,
-      board?.columnOrderIds,
-      '_id'
-    )
-
-    setOrderedColumns(orderedColumns)
-  }, [board])
   const dropAnimation = {
     sideEffects: defaultDropAnimationSideEffects({
       styles: {

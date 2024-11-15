@@ -12,6 +12,7 @@ import {
 import { cloneDeep } from 'lodash'
 import { useParams } from 'react-router-dom'
 import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
+import { updateBoardDetailsAPI, updateColumnDetailsAPI } from '~/apis'
 
 function Board() {
   const dispatch = useDispatch()
@@ -27,21 +28,20 @@ function Board() {
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
     dispatch(updateCurrentActiveBoard(newBoard))
+    updateBoardDetailsAPI(newBoard._id, {
+      columnOrderIds: dndOrderedColumnsIds
+    })
   }
-  const moveCardInTheSameColumn = (
-    dndOrderedCards,
-    dndOrderedCardIds,
-    columnId
-  ) => {
+  const moveCardInTheSameColumn = (dndOrderedCardIds, columnId) => {
     const newBoard = cloneDeep(board)
     const columnToUpdate = newBoard.columns.find(
       (column) => column._id === columnId
     )
     if (columnToUpdate) {
-      columnToUpdate.cards = dndOrderedCards
       columnToUpdate.cardOrderIds = dndOrderedCardIds
     }
     dispatch(updateCurrentActiveBoard(newBoard))
+    updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
   }
   const moveCardToDifferentColumn = (
     currentCardId,

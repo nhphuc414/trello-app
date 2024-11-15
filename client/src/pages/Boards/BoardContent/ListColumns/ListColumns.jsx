@@ -34,10 +34,8 @@ function ListColumns({ columns }) {
       boardId: board._id
     }
     const createdColumn = await createNewColumnAPI(data)
-
     createdColumn.cards = [generatePlaceholderCard(createdColumn)]
     createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
-
     const newBoard = cloneDeep(board)
     newBoard.columns.push(createdColumn)
     newBoard.columnOrderIds.push(createdColumn._id)

@@ -44,10 +44,19 @@ const createNew = async (userId, data) => {
     .collection(BOARD_COLLECTION_NAME)
     .insertOne(newBoardToAdd)
 }
-const update = async (id, data) => {
+const update = async (userId, boardId, data) => {
   INVALID_UPDATE_FIELDS.forEach((field) => {
     delete data[field]
   })
+  const queryConditions = {
+    _id: new ObjectId(`${boardId}`),
+
+    _destroy: false,
+    $or: [
+      { ownerIds: { $all: [new ObjectId(`${userId}`)] } },
+      { memberIds: { $all: [new ObjectId(`${userId}`)] } }
+    ]
+  }
   if (data.columnOrderIds)
     data.columnOrderIds = data.columnOrderIds.map(
       (item) => new ObjectId(`${item}`)
@@ -55,7 +64,7 @@ const update = async (id, data) => {
   return await GET_DB()
     .collection(BOARD_COLLECTION_NAME)
     .findOneAndUpdate(
-      { _id: new ObjectId(`${id}`) },
+      queryConditions,
       { $set: data },
       { returnDocument: 'after' }
     )

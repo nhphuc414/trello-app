@@ -24,7 +24,7 @@ const createNew = async (userId, data) => {
   }
   return getNewBoard
 }
-const update = async (id, data) => {
+const update = async (userId, boardId, data) => {
   const validData = {
     ...data,
     updateAt: Date.now()
@@ -32,7 +32,7 @@ const update = async (id, data) => {
   if (validData.title) {
     validData.slug = slugify(validData.title)
   }
-  return await boardModel.update(id, validData)
+  return await boardModel.update(userId, boardId, validData)
 }
 const getDetails = async (userId, boardId) => {
   const board = await boardModel.getDetails(userId, boardId)
