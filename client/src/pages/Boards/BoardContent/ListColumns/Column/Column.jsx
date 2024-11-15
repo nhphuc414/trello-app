@@ -19,7 +19,6 @@ import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 
 import ListCards from './ListCards/ListCards'
-import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { toast } from 'react-toastify'
@@ -62,7 +61,7 @@ function Column({ column }) {
   const handleClose = () => setAnchorEl(null)
   const open = Boolean(anchorEl)
   //
-  const orderedCard = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const orderedCard = column?.cards
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
   const [newCardTitle, setNewCardTitle] = useState('')
@@ -83,14 +82,13 @@ function Column({ column }) {
     const columnToUpdate = newBoard.columns.find(
       (column) => column._id === createdCard.columnId
     )
-    if (!columnToUpdate) {
+    if (columnToUpdate.cardOrderIds[0].includes('placeholder-card')) {
       columnToUpdate.cards = [createdCard]
       columnToUpdate.cardOrderIds = [createdCard._id]
     } else {
       columnToUpdate.cards.push(createdCard)
       columnToUpdate.cardOrderIds.push(createdCard._id)
     }
-
     dispatch(updateCurrentActiveBoard(newBoard))
     toggleOpenNewCardForm()
     setNewCardTitle('')

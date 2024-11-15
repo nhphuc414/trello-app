@@ -12,7 +12,11 @@ import {
 import { cloneDeep } from 'lodash'
 import { useParams } from 'react-router-dom'
 import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
-import { updateBoardDetailsAPI, updateColumnDetailsAPI } from '~/apis'
+import {
+  moveCardToDifferentColumnAPI,
+  updateBoardDetailsAPI,
+  updateColumnDetailsAPI
+} from '~/apis'
 
 function Board() {
   const dispatch = useDispatch()
@@ -32,16 +36,18 @@ function Board() {
       columnOrderIds: dndOrderedColumnsIds
     })
   }
-  const moveCardInTheSameColumn = (dndOrderedCardIds, columnId) => {
+  const moveCardInTheSameColumn = (dndCardsOrder, columnId) => {
     const newBoard = cloneDeep(board)
     const columnToUpdate = newBoard.columns.find(
       (column) => column._id === columnId
     )
     if (columnToUpdate) {
-      columnToUpdate.cardOrderIds = dndOrderedCardIds
+      const dndCardOrderIds = dndCardsOrder.map((c) => c._id)
+      columnToUpdate.cards = dndCardsOrder
+      columnToUpdate.cardOrderIds = dndCardOrderIds
+      dispatch(updateCurrentActiveBoard(newBoard))
+      updateColumnDetailsAPI(columnId, { cardOrderIds: dndCardOrderIds })
     }
-    dispatch(updateCurrentActiveBoard(newBoard))
-    updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
   }
   const moveCardToDifferentColumn = (
     currentCardId,
@@ -59,6 +65,14 @@ function Board() {
       (c) => c._id === prevColumnId
     )?.cardOrderIds
     if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = []
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find((c) => c._id === nextColumnId)
+        ?.cardOrderIds
+    })
   }
   if (!board) {
     return <PageLoadingSpinner caption='Loading Board...' />

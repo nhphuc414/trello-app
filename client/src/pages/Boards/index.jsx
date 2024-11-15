@@ -91,10 +91,12 @@ function Boards() {
       `/boards?sortBy=${event.target.value}&itemsPerPage=${itemsPerPage.current}&page=${page.current}`
     )
   }
-  const handleItemPerPageChange = (event) => {
+  const handleItemsPerPageChange = (event) => {
     setData(null)
     navigate(
-      `/boards?sortBy=${sortBy.current}&itemsPerPage=${event.target.value}&page=${page.current}`
+      `/boards?sortBy=${sortBy.current}&itemsPerPage=${
+        event.target.value
+      }&page=${1}`
     )
   }
   return (
@@ -151,7 +153,7 @@ function Boards() {
                   <InputLabel>Items Per Page</InputLabel>
                   <Select
                     value={itemsPerPage.current}
-                    onChange={handleItemPerPageChange}
+                    onChange={handleItemsPerPageChange}
                     label='Items Per Page'
                   >
                     <MenuItem value='6'>6</MenuItem>

@@ -6,7 +6,10 @@ export const errorHandlingMiddleware = (err, req, res, next) => {
 
   const responseError = {
     statusCode: err.statusCode,
-    message: err.message || StatusCodes[err.statusCode],
+    message:
+      env.BUILD_MODE === 'dev'
+        ? err.message || StatusCodes[err.statusCode]
+        : 'Oops! Something Went Wrong! Try Again Later!',
     stack: err.stack
   }
   // console.log(responseError)

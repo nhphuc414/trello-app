@@ -11,7 +11,7 @@ import {
   getFirstCollision
 } from '@dnd-kit/core'
 import { MouseSensor, TouchSensor } from '~/customLibs/DndKitSensors'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
@@ -21,8 +21,13 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
-function BoardContent({ board, moveColumns, moveCardInTheSameColumn }) {
-  const [orderedColumns, setOrderedColumns] = useState(board?.columns)
+function BoardContent({
+  board,
+  moveColumns,
+  moveCardInTheSameColumn,
+  moveCardToDifferentColumn
+}) {
+  const [orderedColumns, setOrderedColumns] = useState([])
 
   const [activeDragItemId, setActiveDragItemId] = useState(null)
   const [activeDragItemType, setActiveDragItemType] = useState(null)
@@ -53,7 +58,8 @@ function BoardContent({ board, moveColumns, moveCardInTheSameColumn }) {
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerFrom
   ) => {
     setOrderedColumns((prev) => {
       const overCardIndex = overColumn?.cardOrderIds?.findIndex(
@@ -115,6 +121,13 @@ function BoardContent({ board, moveColumns, moveCardInTheSameColumn }) {
           (id) => !id.includes('-placeholder-card')
         )
       }
+      if (triggerFrom === 'handleDragEnd')
+        moveCardToDifferentColumn(
+          activeDraggingCardId,
+          oldColumn._id,
+          nextOverColumn._id,
+          nextColumns
+        )
       return nextColumns
     })
   }
@@ -152,7 +165,8 @@ function BoardContent({ board, moveColumns, moveCardInTheSameColumn }) {
         over,
         activeColumn,
         activeDraggingCardId,
-        activeDraggingCardData
+        activeDraggingCardData,
+        'handleDragOver'
       )
     }
   }
@@ -179,18 +193,20 @@ function BoardContent({ board, moveColumns, moveCardInTheSameColumn }) {
           over,
           activeColumn,
           activeDraggingCardId,
-          activeDraggingCardData
+          activeDraggingCardData,
+          'handleDragEnd'
         )
       } else {
-        const oldCardIndex = oldColumn?.cardOrderIds?.findIndex(
-          (id) => id === activeDragItemId
+        const oldCardIndex = oldColumn?.cards?.findIndex(
+          (card) => card._id === activeDragItemId
         )
 
-        const newCardIndex = overColumn?.cardOrderIds?.findIndex(
-          (id) => id === overCardId
+        const newCardIndex = overColumn?.cards?.findIndex(
+          (card) => card._id === overCardId
         )
-        const dndCardOrderIds = arrayMove(
-          oldColumn?.cardOrderIds,
+        if (oldCardIndex === newCardIndex) return
+        const dndCardsOrder = arrayMove(
+          oldColumn?.cards,
           oldCardIndex,
           newCardIndex
         )
@@ -199,10 +215,11 @@ function BoardContent({ board, moveColumns, moveCardInTheSameColumn }) {
           const targetColumn = nextColumns?.find(
             (c) => c._id === overColumn._id
           )
-          targetColumn.cardOrderIds = dndCardOrderIds
+          targetColumn.cards = dndCardsOrder
+          targetColumn.cardOrderIds = dndCardsOrder.map((c) => c._id)
           return nextColumns
         })
-        moveCardInTheSameColumn(dndCardOrderIds, oldColumn._id)
+        moveCardInTheSameColumn(dndCardsOrder, oldColumn._id)
       }
     }
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
@@ -267,6 +284,9 @@ function BoardContent({ board, moveColumns, moveCardInTheSameColumn }) {
     },
     [activeDragItemType, orderedColumns]
   )
+  useEffect(() => {
+    setOrderedColumns(board?.columns)
+  }, [board])
   return (
     <DndContext
       collisionDetection={collisionDetectionStrategy}
