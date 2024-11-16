@@ -1,4 +1,3 @@
-// TrungQuanDev: https://youtube.com/@trungquandev
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
@@ -8,8 +7,11 @@ import starImage from '~/assets/404/particles.png'
 import { ReactComponent as PlanetSvg } from '~/assets/404/planet.svg'
 import { ReactComponent as AstronautSvg } from '~/assets/404/astronaut.svg'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { selectCurrentUser } from '~/redux/user/userSlice'
 
 function NotFound() {
+  const user = useSelector(selectCurrentUser)
   return (
     <Box
       sx={{
@@ -71,7 +73,7 @@ function NotFound() {
           </Typography>
           &nbsp;
           <Typography variant='span' sx={{ color: '#fdba26', fontWeight: 500 }}>
-            TrungQuanDev
+            {user && user.username}
           </Typography>
           ?<br />
           Hmm, looks like that page doesn&apos;t exist.

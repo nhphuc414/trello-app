@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { toast } from 'react-toastify'
 
@@ -8,16 +8,24 @@ function ToggleFocusInput({
   inputFontSize = '16px',
   ...props
 }) {
+  const calculateTextWidth = (inputValue) => {
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    context.font = `${inputFontSize} Roboto`
+    return context.measureText(inputValue).width + 30
+  }
   const [inputValue, setInputValue] = useState(value)
-  const [width, setWidth] = useState(150)
-  const spanRef = useRef(null)
+  const [width, setWidth] = useState(Math.max(50, calculateTextWidth(value)))
+
   const triggerBlur = () => {
     setInputValue(inputValue.trim())
     if (!inputValue || inputValue.trim() === value) {
+      setWidth(Math.max(50, calculateTextWidth(value)))
       setInputValue(value)
       return
     }
     if (inputValue.length < 3 || inputValue.length > 50) {
+      setWidth(Math.max(50, calculateTextWidth(value)))
       setInputValue(value)
       toast.error('Invalid Input!')
       return
@@ -29,39 +37,23 @@ function ToggleFocusInput({
       event.target.blur()
     }
   }
-  useEffect(() => {
-    if (spanRef.current) {
-      setWidth(spanRef.current.offsetWidth + 20)
-    }
-  }, [inputValue])
+
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <span
-        ref={spanRef}
-        style={{
-          visibility: 'hidden',
-          position: 'absolute',
-          whiteSpace: 'pre'
-        }}
-      >
-        {inputValue}
-      </span>
+    <>
       <TextField
         id='toggle-focus-input-controlled'
         variant='outlined'
         size='small'
         value={inputValue}
         onChange={(event) => {
+          setWidth(Math.max(50, calculateTextWidth(event.target.value)))
           setInputValue(event.target.value)
-          if (spanRef.current) {
-            setWidth(spanRef.current.offsetWidth + 30)
-          }
         }}
         onBlur={triggerBlur}
         onKeyDown={handleKeyDown}
+        style={{ width: `${width}px` }}
         {...props}
         sx={{
-          width: { width },
           '& label': {},
           '& input': { fontSize: inputFontSize, fontWeight: 'bold' },
           '& .MuiOutlinedInput-root': {
@@ -85,7 +77,7 @@ function ToggleFocusInput({
           }
         }}
       />
-    </div>
+    </>
   )
 }
 
