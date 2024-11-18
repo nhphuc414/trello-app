@@ -1,4 +1,3 @@
-// TrungQuanDev: https://youtube.com/@trungquandev
 import Box from '@mui/material/Box'
 
 // Component này có nhiệm vụ trả về một Alert Message cho field chỉ định (nếu có).
