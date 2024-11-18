@@ -8,10 +8,7 @@ import Badge from '@mui/material/Badge'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 
 function CardUserGroup({ cardMemberIds = [] }) {
-  /**
-   * Xử lý Popover để ẩn hoặc hiện toàn bộ user trên một cái popup, tương tự docs để tham khảo ở đây:
-   * https://mui.com/material-ui/react-popover/
-   */
+
   const [anchorPopoverElement, setAnchorPopoverElement] = useState(null)
   const isOpenPopover = Boolean(anchorPopoverElement)
   const popoverId = isOpenPopover ? 'card-all-users-popover' : undefined
@@ -20,10 +17,8 @@ function CardUserGroup({ cardMemberIds = [] }) {
     else setAnchorPopoverElement(null)
   }
 
-  // Lưu ý ở đây chúng ta không dùng Component AvatarGroup của MUI bởi nó không hỗ trợ tốt trong việc chúng ta cần custom & trigger xử lý phần tử tính toán cuối, đơn giản là cứ dùng Box và CSS - Style đám Avatar cho chuẩn kết hợp tính toán một chút thôi.
   return (
     <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-      {/* Hiển thị các user là thành viên của card */}
       {[...Array(8)].map((_, index) =>
         <Tooltip title="trungquandev" key={index}>
           <Avatar
@@ -34,7 +29,6 @@ function CardUserGroup({ cardMemberIds = [] }) {
         </Tooltip>
       )}
 
-      {/* Nút này để mở popover thêm member */}
       <Tooltip title="Add new member">
         <Box
           aria-describedby={popoverId}
@@ -61,7 +55,6 @@ function CardUserGroup({ cardMemberIds = [] }) {
         </Box>
       </Tooltip>
 
-      {/* Khi Click vào + ở trên thì sẽ mở popover hiện toàn bộ users trong board để người dùng Click chọn thêm vào card  */}
       <Popover
         id={popoverId}
         open={isOpenPopover}
@@ -72,7 +65,6 @@ function CardUserGroup({ cardMemberIds = [] }) {
         <Box sx={{ p: 2, maxWidth: '260px', display: 'flex', flexWrap: 'wrap', gap: 1.5 }}>
           {[...Array(16)].map((_, index) =>
             <Tooltip title="trungquandev" key={index}>
-              {/* Cách làm Avatar kèm badge icon: https://mui.com/material-ui/react-avatar/#with-badge */}
               <Badge
                 sx={{ cursor: 'pointer' }}
                 overlap="rectangular"

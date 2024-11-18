@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Modal from '@mui/material/Modal'
 import Typography from '@mui/material/Typography'
@@ -34,6 +33,14 @@ import CardDescriptionMdEditor from './CardDescriptionMdEditor'
 import CardActivitySection from './CardActivitySection'
 
 import { styled } from '@mui/material/styles'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  clearCurrentActiveCard,
+  selectCurrentActiveCard,
+  updateCurrentActiveCard
+} from '~/redux/activeCard/activeCardSlice'
+import { updateCardDetailsAPI } from '~/apis'
+import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -59,19 +66,26 @@ const SidebarItem = styled(Box)(({ theme }) => ({
  * Note: Modal là một low-component mà bọn MUI sử dụng bên trong những thứ như Dialog, Drawer, Menu, Popover. Ở đây dĩ nhiên chúng ta có thể sử dụng Dialog cũng không thành vấn đề gì, nhưng sẽ sử dụng Modal để dễ linh hoạt tùy biến giao diện từ con số 0 cho phù hợp với mọi nhu cầu nhé.
  */
 function ActiveCard() {
-  const [isOpen, setIsOpen] = useState(true)
-  const handleOpenModal = () => setIsOpen(true)
+  const dispatch = useDispatch()
+  const activeCard = useSelector(selectCurrentActiveCard)
   const handleCloseModal = () => {
-    setIsOpen(false)
+    dispatch(clearCurrentActiveCard())
   }
-
+  const callAPIUpdateCard = async (data) => {
+    const updatedCard = await updateCardDetailsAPI(activeCard._id, data)
+    dispatch(updateCurrentActiveCard(updatedCard))
+    dispatch(updateCardInBoard(updatedCard))
+    return updatedCard
+  }
   const onUpdateCardTitle = (newTitle) => {
-    console.log(newTitle.trim())
-    // Gọi API...
+    callAPIUpdateCard({ title: newTitle })
   }
+  const onUpdateCardDescription = (newDescription) => {
+    callAPIUpdateCard({ description: newDescription })
+  }
+  // Gọi API...
 
   const onUploadCardCover = (event) => {
-    console.log(event.target?.files[0])
     const error = singleFileValidator(event.target?.files[0])
     if (error) {
       toast.error(error)
@@ -80,14 +94,20 @@ function ActiveCard() {
     let reqData = new FormData()
     reqData.append('cardCover', event.target?.files[0])
 
-    // Gọi API...
+    toast
+      .promise(callAPIUpdateCard(reqData), {
+        pending: 'Updating...'
+      })
+      .finally(() => {
+        event.target.value = ''
+      })
   }
 
   return (
     <Modal
       disableScrollLock
-      open={isOpen}
-      onClose={handleCloseModal} // Sử dụng onClose trong trường hợp muốn đóng Modal bằng nút ESC hoặc click ra ngoài Modal
+      open={true}
+      onClose={handleCloseModal}
       sx={{ overflowY: 'auto' }}
     >
       <Box
@@ -121,18 +141,20 @@ function ActiveCard() {
           />
         </Box>
 
-        <Box sx={{ mb: 4 }}>
-          <img
-            style={{
-              width: '100%',
-              height: '320px',
-              borderRadius: '6px',
-              objectFit: 'cover'
-            }}
-            src='https://trungquandev.com/wp-content/uploads/2023/08/fit-banner-for-facebook-blog-trungquandev-codetq.png'
-            alt='card-cover'
-          />
-        </Box>
+        {activeCard?.cover && (
+          <Box sx={{ mb: 4 }}>
+            <img
+              style={{
+                width: '100%',
+                height: '320px',
+                borderRadius: '6px',
+                objectFit: 'cover'
+              }}
+              src={activeCard?.cover}
+              alt='card-cover'
+            />
+          </Box>
+        )}
 
         <Box
           sx={{
@@ -146,16 +168,14 @@ function ActiveCard() {
         >
           <CreditCardIcon />
 
-          {/* Feature 01: Xử lý tiêu đề của Card */}
           <ToggleFocusInput
             inputFontSize='22px'
-            value={'card?.title'}
+            value={activeCard?.title}
             onChangedValue={onUpdateCardTitle}
           />
         </Box>
 
         <Grid container spacing={2} sx={{ mb: 3 }}>
-          {/* Left side */}
           <Grid xs={12} sm={9}>
             <Box sx={{ mb: 3 }}>
               <Typography
@@ -164,7 +184,6 @@ function ActiveCard() {
                 Members
               </Typography>
 
-              {/* Feature 02: Xử lý các thành viên của Card */}
               <CardUserGroup />
             </Box>
 
@@ -179,8 +198,10 @@ function ActiveCard() {
                 </Typography>
               </Box>
 
-              {/* Feature 03: Xử lý mô tả của Card */}
-              <CardDescriptionMdEditor />
+              <CardDescriptionMdEditor
+                cardDescriptionProp={activeCard?.description}
+                handleUpdateCardDescription={onUpdateCardDescription}
+              />
             </Box>
 
             <Box sx={{ mb: 3 }}>
@@ -194,12 +215,10 @@ function ActiveCard() {
                 </Typography>
               </Box>
 
-              {/* Feature 04: Xử lý các hành động, ví dụ comment vào Card */}
               <CardActivitySection />
             </Box>
           </Grid>
 
-          {/* Right side */}
           <Grid xs={12} sm={3}>
             <Typography
               sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}
@@ -207,12 +226,10 @@ function ActiveCard() {
               Add To Card
             </Typography>
             <Stack direction='column' spacing={1}>
-              {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
               <SidebarItem className='active'>
                 <PersonOutlineOutlinedIcon fontSize='small' />
                 Join
               </SidebarItem>
-              {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
               <SidebarItem className='active' component='label'>
                 <ImageOutlinedIcon fontSize='small' />
                 Cover
