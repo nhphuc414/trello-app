@@ -24,15 +24,15 @@ const persistor = persistStore(store)
 import { injectStore } from './utils/authorizedAxios.js'
 injectStore(store)
 createRoot(document.getElementById('root')).render(
-  <BrowserRouter
-    future={{
-      v7_relativeSplatPath: true,
-      v7_startTransition: true
-    }}
-    basename='/'
-  >
-    <Provider store={store}>
-      <PersistGate persistor={persistor}>
+  <Provider store={store}>
+    <PersistGate persistor={persistor}>
+      <BrowserRouter
+        future={{
+          v7_relativeSplatPath: true,
+          v7_startTransition: true
+        }}
+        basename='/'
+      >
         <CssVarsProvider theme={theme}>
           <ConfirmProvider
             defaultOptions={{
@@ -55,7 +55,7 @@ createRoot(document.getElementById('root')).render(
             />
           </ConfirmProvider>
         </CssVarsProvider>
-      </PersistGate>
-    </Provider>
-  </BrowserRouter>
+      </BrowserRouter>
+    </PersistGate>
+  </Provider>
 )

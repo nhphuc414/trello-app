@@ -202,6 +202,19 @@ const getBoards = async (userId, page, itemsPerPage, sortBy) => {
     totalBoards: res.queryTotalBoards[0]?.countedAllBoards || 0
   }
 }
+const pushMemberIds = async (boardId, userId) => {
+  return (
+    (await GET_DB()
+      .collection(BOARD_COLLECTION_NAME)
+      .findOneAndUpdate(
+        {
+          _id: new ObjectId(`${boardId}`)
+        },
+        { $push: { memberIds: new ObjectId(`${userId}`) } },
+        { returnDocument: 'after' }
+      )) || null
+  )
+}
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
@@ -211,5 +224,6 @@ export const boardModel = {
   pushColumnOrderIds,
   pullColumnOrderIds,
   update,
-  getBoards
+  getBoards,
+  pushMemberIds
 }

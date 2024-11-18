@@ -43,6 +43,13 @@ export const notificationsSlice = createSlice({
         ? incomingInvitations.reverse()
         : []
     })
+    builder.addCase(updateBoardInvitationAPI.fulfilled, (state, action) => {
+      const incomingInvitation = action.payload
+      const getInvitation = state.currentNotifications.find(
+        (i) => i._id === incomingInvitation._id
+      )
+      getInvitation.boardInvitation = incomingInvitation.boardInvitation
+    })
   }
 })
 export const {

@@ -135,11 +135,28 @@ const findByUser = async (userId) => {
     .toArray()
   return results
 }
+const findByInviteeAndBoard = async (inviteeId, boardId) => {
+  const pipeline = [
+    {
+      $match: {
+        inviteeId: inviteeId,
+        'boardInvitation.boardId': boardId
+      }
+    }
+  ]
+  console.log(inviteeId, boardId)
+  const result = await GET_DB()
+    .collection(INVITATION_COLLECTION_NAME)
+    .aggregate(pipeline)
+    .toArray()
+  return result[0] || null
+}
 export const invitationModel = {
   INVITATION_COLLECTION_NAME,
   INVITATION_COLLECTION_SCHEMA,
   createNewBoardInvitation,
   findOneById,
   update,
-  findByUser
+  findByUser,
+  findByInviteeAndBoard
 }
