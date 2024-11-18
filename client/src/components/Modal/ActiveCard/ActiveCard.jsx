@@ -35,8 +35,9 @@ import CardActivitySection from './CardActivitySection'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  clearCurrentActiveCard,
+  clearAndHideCurrentActiveCard,
   selectCurrentActiveCard,
+  selectIsShowModalActiveCard,
   updateCurrentActiveCard
 } from '~/redux/activeCard/activeCardSlice'
 import { updateCardDetailsAPI } from '~/apis'
@@ -68,8 +69,9 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 function ActiveCard() {
   const dispatch = useDispatch()
   const activeCard = useSelector(selectCurrentActiveCard)
+  const isShowModalActiveCard = useSelector(selectIsShowModalActiveCard)
   const handleCloseModal = () => {
-    dispatch(clearCurrentActiveCard())
+    dispatch(clearAndHideCurrentActiveCard())
   }
   const callAPIUpdateCard = async (data) => {
     const updatedCard = await updateCardDetailsAPI(activeCard._id, data)
@@ -102,11 +104,13 @@ function ActiveCard() {
         event.target.value = ''
       })
   }
-
+  const onAddCardComment = async (commentToAdd) => {
+    await callAPIUpdateCard({ commentToAdd })
+  }
   return (
     <Modal
       disableScrollLock
-      open={true}
+      open={isShowModalActiveCard}
       onClose={handleCloseModal}
       sx={{ overflowY: 'auto' }}
     >
@@ -215,7 +219,10 @@ function ActiveCard() {
                 </Typography>
               </Box>
 
-              <CardActivitySection />
+              <CardActivitySection
+                cardComments={activeCard?.comments}
+                onAddCardComment={onAddCardComment}
+              />
             </Box>
           </Grid>
 
