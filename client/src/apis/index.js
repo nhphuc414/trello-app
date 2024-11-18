@@ -64,6 +64,7 @@ export const moveCardToDifferentColumnAPI = async (data) => {
   )
   return res.data
 }
+
 //Column
 export const createNewColumnAPI = async (data) => {
   const res = await autorizedAxiosInstance.post(`${API_ROOT}/v1/columns`, data)
@@ -94,3 +95,13 @@ export const updateCardDetailsAPI = async (id, data) => {
   )
   return res.data
 }
+//Invitation
+export const inviteUserToBoardAPI = async (data) => {
+  const res = await autorizedAxiosInstance.post(
+    `${API_ROOT}/v1/invitations/board`,
+    data
+  )
+  toast.success('User invited to board successfully!')
+  return res.data
+}
+
