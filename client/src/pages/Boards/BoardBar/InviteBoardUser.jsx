@@ -14,7 +14,8 @@ import {
 } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { inviteUserToBoardAPI } from '~/apis'
-import { socketIoInstance } from '~/main'
+import { socketIoInstance } from '~/socketClient'
+
 
 function InviteBoardUser({ boardId }) {
   const [anchorPopoverElement, setAnchorPopoverElement] = useState(null)

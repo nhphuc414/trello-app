@@ -157,7 +157,7 @@ const getDetails = async (userId, boardId) => {
     .toArray()
   return result[0] || null
 }
-const getBoards = async (userId, page, itemsPerPage, sortBy) => {
+const getBoards = async (userId, page, itemsPerPage, sortBy, queryFilters) => {
   const queryConditions = [
     {
       _destroy: false
@@ -169,6 +169,14 @@ const getBoards = async (userId, page, itemsPerPage, sortBy) => {
       ]
     }
   ]
+  if (queryFilters) {
+    Object.keys(queryFilters).forEach((key) => {
+      //queryConditions.push({ [key]: { $regex: queryFilters[key] } })
+      queryConditions.push({
+        [key]: { $regex: new RegExp(queryFilters[key], 'i') }
+      })
+    })
+  }
   let sortCriteria
   if (sortBy === 'alphabet') {
     sortCriteria = { title: 1 }

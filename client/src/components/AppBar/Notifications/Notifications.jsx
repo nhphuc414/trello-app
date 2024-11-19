@@ -22,9 +22,10 @@ import {
   updateBoardInvitationAPI
 } from '~/redux/notifications/notificationsSlice'
 import { toast } from 'react-toastify'
-import { socketIoInstance } from '~/main'
+
 import { selectCurrentUser } from '~/redux/user/userSlice'
 import { useNavigate } from 'react-router-dom'
+import { socketIoInstance } from '~/socketClient'
 
 function Notifications() {
   const [anchorEl, setAnchorEl] = useState(null)

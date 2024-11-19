@@ -66,7 +66,7 @@ function CardActivitySection({ cardComments = [], onAddCardComment }) {
           sx={{ display: 'flex', gap: 1, width: '100%', mb: 1.5 }}
           key={index}
         >
-          <Tooltip title='trungquandev'>
+          <Tooltip title={comment.userDisplayName}>
             <Avatar
               sx={{ width: 36, height: 36, cursor: 'pointer' }}
               alt={comment.userDisplayName}

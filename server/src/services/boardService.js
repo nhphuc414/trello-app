@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
+import { ObjectId } from 'mongodb'
 import { boardModel } from '~/models/boardModel'
 import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
@@ -35,6 +36,8 @@ const update = async (userId, boardId, data) => {
   return await boardModel.update(userId, boardId, validData)
 }
 const getDetails = async (userId, boardId) => {
+  if (!ObjectId.isValid(boardId))
+    throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Board not found!')
   const board = await boardModel.getDetails(userId, boardId)
   if (!board) throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found!')
   const resBoard = cloneDeep(board)
@@ -60,7 +63,7 @@ const moveCardToDifferentColumn = async (data) => {
   })
   return { updateResullt: 'Successfully!' }
 }
-const getBoards = async (userId, page, itemsPerPage, sortBy) => {
+const getBoards = async (userId, page, itemsPerPage, sortBy, queryFilters) => {
   if (!page) page = DEFAULT_PAGE
   if (!itemsPerPage) itemsPerPage = DEFAULT_ITEMS_PER_PAGE
   if (!sortBy) sortBy = DEFAULT_SORT_BY
@@ -68,7 +71,8 @@ const getBoards = async (userId, page, itemsPerPage, sortBy) => {
     userId,
     parseInt(page, 10),
     parseInt(itemsPerPage, 10),
-    sortBy
+    sortBy,
+    queryFilters
   )
 }
 export const boardService = {
