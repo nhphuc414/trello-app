@@ -7,6 +7,7 @@ import {
 } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
 import { ObjectId } from 'mongodb'
+import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
 // Define Collection (name & schema)
 const CARD_COLLECTION_NAME = 'cards'
 const CARD_COLLECTION_SCHEMA = Joi.object({
@@ -94,7 +95,24 @@ const deleteManyByColumnId = async (columnId) => {
     .collection(CARD_COLLECTION_NAME)
     .deleteMany({ columnId: new ObjectId(`${columnId}`) })
 }
-
+const updateMembers = async (cardId, incomingMemberInfo) => {
+  let updateCondition = {}
+  if (incomingMemberInfo.action === CARD_MEMBER_ACTIONS.ADD) {
+    updateCondition = {
+      $push: { memberIds: new ObjectId(`${incomingMemberInfo.userId}`) }
+    }
+  } else if (incomingMemberInfo.action === CARD_MEMBER_ACTIONS.REMOVE) {
+    updateCondition = {
+      $pull: { memberIds: new ObjectId(`${incomingMemberInfo.userId}`) }
+    }
+  }
+  const res = await GET_DB()
+    .collection(CARD_COLLECTION_NAME)
+    .findOneAndUpdate({ _id: new ObjectId(`${cardId}`) }, updateCondition, {
+      returnDocument: 'after'
+    })
+  return res
+}
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
@@ -102,5 +120,6 @@ export const cardModel = {
   findOneById,
   unshiftNewComment,
   update,
-  deleteManyByColumnId
+  deleteManyByColumnId,
+  updateMembers
 }

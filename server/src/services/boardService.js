@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
+import { ObjectId } from 'mongodb'
 import { boardModel } from '~/models/boardModel'
 import { cardModel } from '~/models/cardModel'
 import { columnModel } from '~/models/columnModel'
@@ -35,6 +36,8 @@ const update = async (userId, boardId, data) => {
   return await boardModel.update(userId, boardId, validData)
 }
 const getDetails = async (userId, boardId) => {
+  if (!ObjectId.isValid(boardId))
+    throw new ApiError(StatusCodes.NOT_ACCEPTABLE, 'Board not found!')
   const board = await boardModel.getDetails(userId, boardId)
   if (!board) throw new ApiError(StatusCodes.NOT_FOUND, 'Board not found!')
   const resBoard = cloneDeep(board)

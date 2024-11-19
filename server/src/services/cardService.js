@@ -15,12 +15,13 @@ const update = async (id, data, cardCoverFile, userInfo) => {
     ...data,
     updateAt: Date.now()
   }
+  let updatedCard = {}
   if (cardCoverFile) {
     const updateResult = await CloudinaryProvider.uploadStream(
       cardCoverFile.buffer,
       'card-covers'
     )
-    return await cardModel.update(id, {
+    updatedCard = await cardModel.update(id, {
       cover: updateResult.secure_url
     })
   } else if (validData.commentToAdd) {
@@ -30,8 +31,16 @@ const update = async (id, data, cardCoverFile, userInfo) => {
       userId: userInfo._id,
       userEmail: userInfo.email
     }
-    return await cardModel.unshiftNewComment(id, commentData)
-  } else return await cardModel.update(id, validData)
+    updatedCard = await cardModel.unshiftNewComment(id, commentData)
+  } else if (validData.incomingMemberInfo) {
+    updatedCard = await cardModel.updateMembers(
+      id,
+      validData.incomingMemberInfo
+    )
+  } else {
+    updatedCard = await cardModel.update(id, validData)
+  }
+  return updatedCard
 }
 
 export const cardService = {
