@@ -23,10 +23,6 @@ const persistor = persistStore(store)
 //Inject Store
 import { injectStore } from './utils/authorizedAxios.js'
 injectStore(store)
-//Concfig socket.io
-import { io } from 'socket.io-client'
-import { API_ROOT } from './utils/constants.js'
-export const socketIoInstance = io(API_ROOT)
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <PersistGate persistor={persistor}>
