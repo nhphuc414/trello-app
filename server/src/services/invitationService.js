@@ -30,7 +30,7 @@ const createNewBoardInvitation = async (reqBody, inviterId) => {
       'Oops! You are inviting yourself!'
     )
   }
-  if (boardOwnerMemberIds.includes(inviter._id.toString())) {
+  if (boardOwnerMemberIds.includes(invitee._id.toString())) {
     throw new ApiError(
       StatusCodes.NOT_ACCEPTABLE,
       'The user of this email has already joined this board!'
