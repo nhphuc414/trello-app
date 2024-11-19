@@ -4,10 +4,17 @@ import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-
+import Button from '@mui/material/Button'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import Divider from '@mui/material/Divider'
+import ContentCut from '@mui/icons-material/ContentCut'
+import Cloud from '@mui/icons-material/Cloud'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Grid from '@mui/material/Unstable_Grid2'
 import Stack from '@mui/material/Stack'
-import Divider from '@mui/material/Divider'
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import HomeIcon from '@mui/icons-material/Home'
@@ -20,6 +27,8 @@ import PaginationItem from '@mui/material/PaginationItem'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import randomColor from 'randomcolor'
 import SidebarCreateBoardModal from './create'
+import StarBorderIcon from '@mui/icons-material/StarBorder'
+import StarIcon from '@mui/icons-material/Star'
 
 import { styled } from '@mui/material/styles'
 import { fetchBoardsAPI } from '~/apis'
@@ -28,7 +37,8 @@ import {
   DEFAULT_PAGE,
   DEFAULT_SORT_BY
 } from '~/utils/constants'
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import { FormControl, InputLabel, Select } from '@mui/material'
+import { handleFeatureInDevelopment } from '~/utils/handleFeatureInDevelopment'
 
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -53,6 +63,14 @@ function Boards() {
     boards: null,
     totalBoards: null
   })
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
   const page = useRef(DEFAULT_PAGE)
   const sortBy = useRef(DEFAULT_SORT_BY)
   const itemsPerPage = useRef(DEFAULT_ITEMS_PER_PAGE)
@@ -99,6 +117,9 @@ function Boards() {
       }&page=${1}`
     )
   }
+  const handleStarred = (board) => {
+    board.starred = true
+  }
   return (
     <Container disableGutters maxWidth={false}>
       <AppBar />
@@ -110,11 +131,11 @@ function Boards() {
                 <SpaceDashboardIcon fontSize='small' />
                 Boards
               </SidebarItem>
-              <SidebarItem>
+              <SidebarItem onClick={handleFeatureInDevelopment}>
                 <ListAltIcon fontSize='small' />
                 Templates
               </SidebarItem>
-              <SidebarItem>
+              <SidebarItem onClick={handleFeatureInDevelopment}>
                 <HomeIcon fontSize='small' />
                 Home
               </SidebarItem>
@@ -185,9 +206,71 @@ function Boards() {
                 {data?.boards.map((b) => (
                   <Grid xs={2} sm={3} md={4} key={b._id}>
                     <Card sx={{ width: '250px' }}>
-                      <Box
-                        sx={{ height: '50px', backgroundColor: randomColor() }}
-                      ></Box>
+                      <Box>
+                        <Box
+                          sx={{
+                            height: '50px',
+                            position: 'relative',
+                            backgroundColor: randomColor()
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              right: 0
+                            }}
+                          >
+                            <Button
+                              width='100%'
+                              id='basic-button-recent'
+                              aria-controls={
+                                open ? 'basic-menu-recent' : undefined
+                              }
+                              aria-expanded={open ? 'true' : undefined}
+                              onClick={handleClick}
+                              endIcon={<ExpandMoreIcon />}
+                            ></Button>
+                            <Menu
+                              id='basic-menu-recent'
+                              anchorEl={anchorEl}
+                              open={open}
+                              onClose={handleClose}
+                              anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'right'
+                              }}
+                              transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right'
+                              }}
+                              MenuListProps={{
+                                'aria-labelledby': 'basic-button-recent'
+                              }}
+                            >
+                              <MenuItem>
+                                <ListItemIcon>
+                                  <ContentCut fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText>Cut</ListItemText>
+                                <Typography
+                                  variant='body2'
+                                  color='text.secondary'
+                                >
+                                  ⌘X
+                                </Typography>
+                              </MenuItem>
+                              <Divider />
+                              <MenuItem>
+                                <ListItemIcon>
+                                  <Cloud fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText>Web Clipboard</ListItemText>
+                              </MenuItem>
+                            </Menu>
+                          </Box>
+                        </Box>
+                      </Box>
 
                       <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 } }}>
                         <Typography gutterBottom variant='h6' component='div'>
@@ -205,18 +288,49 @@ function Boards() {
                           {b.description}
                         </Typography>
                         <Box
-                          component={Link}
-                          to={`/boards/${b.slug}/${b._id}`}
                           sx={{
                             mt: 1,
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'flex-end',
-                            color: 'primary.main',
-                            '&:hover': { color: 'primary.light' }
+                            justifyContent: 'space-between',
+                            color: 'primary.main'
                           }}
                         >
-                          Go to board <ArrowRightIcon fontSize='small' />
+                          <Box
+                            sx={{
+                              mt: 1,
+                              display: 'flex'
+                            }}
+                            onClick={() => handleStarred(b)}
+                          >
+                            {b?.starred ? (
+                              <StarIcon
+                                sx={{
+                                  color: '#bfbf21'
+                                }}
+                              />
+                            ) : (
+                              <StarBorderIcon
+                                sx={{
+                                  color: '#bfbf21'
+                                }}
+                              />
+                            )}
+                          </Box>
+                          <Box
+                            component={Link}
+                            to={`/boards/${b.slug}/${b._id}`}
+                            sx={{
+                              mt: 1,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'flex-end',
+                              color: 'primary.main',
+                              '&:hover': { color: 'primary.light' }
+                            }}
+                          >
+                            Go to board <ArrowRightIcon fontSize='small' />
+                          </Box>
                         </Box>
                       </CardContent>
                     </Card>

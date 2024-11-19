@@ -44,6 +44,7 @@ import { updateCardDetailsAPI } from '~/apis'
 import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { selectCurrentUser } from '~/redux/user/userSlice'
 import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
+import { handleFeatureInDevelopment } from '~/utils/handleFeatureInDevelopment'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -275,23 +276,23 @@ function ActiveCard() {
                 <VisuallyHiddenInput type='file' onChange={onUploadCardCover} />
               </SidebarItem>
 
-              <SidebarItem>
+              <SidebarItem onClick={handleFeatureInDevelopment}>
                 <AttachFileOutlinedIcon fontSize='small' />
                 Attachment
               </SidebarItem>
-              <SidebarItem>
+              <SidebarItem onClick={handleFeatureInDevelopment}>
                 <LocalOfferOutlinedIcon fontSize='small' />
                 Labels
               </SidebarItem>
-              <SidebarItem>
+              <SidebarItem onClick={handleFeatureInDevelopment}>
                 <TaskAltOutlinedIcon fontSize='small' />
                 Checklist
               </SidebarItem>
-              <SidebarItem>
+              <SidebarItem onClick={handleFeatureInDevelopment}>
                 <WatchLaterOutlinedIcon fontSize='small' />
                 Dates
               </SidebarItem>
-              <SidebarItem>
+              <SidebarItem onClick={handleFeatureInDevelopment}>
                 <AutoFixHighOutlinedIcon fontSize='small' />
                 Custom Fields
               </SidebarItem>
@@ -302,7 +303,7 @@ function ActiveCard() {
             <Typography
               sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}
             >
-              Power-Ups
+              Power-Ups (In Development)
             </Typography>
             <Stack direction='column' spacing={1}>
               <SidebarItem>
@@ -324,7 +325,7 @@ function ActiveCard() {
             <Typography
               sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}
             >
-              Actions
+              Actions (In Development)
             </Typography>
             <Stack direction='column' spacing={1}>
               <SidebarItem>
