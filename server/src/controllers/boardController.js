@@ -6,7 +6,8 @@ const createNew = async (req, res) => {
 }
 const update = async (req, res) => {
   const board = await boardService.update(
-    req.jwtDecoded._id, req.params.id,
+    req.jwtDecoded._id,
+    req.params.id,
     req.body
   )
   res.status(StatusCodes.OK).json(board)
@@ -21,12 +22,14 @@ const moveCardToDifferentColumn = async (req, res) => {
 }
 const getBoards = async (req, res) => {
   const userId = req.jwtDecoded._id
-  const { page, itemsPerPage, sortBy } = req.query
+  const { page, itemsPerPage, sortBy, q } = req.query
+  const queryFilters = q
   const result = await boardService.getBoards(
     userId,
     page,
     itemsPerPage,
-    sortBy
+    sortBy,
+    queryFilters
   )
   res.status(StatusCodes.OK).json(result)
 }

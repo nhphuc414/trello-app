@@ -63,7 +63,7 @@ const moveCardToDifferentColumn = async (data) => {
   })
   return { updateResullt: 'Successfully!' }
 }
-const getBoards = async (userId, page, itemsPerPage, sortBy) => {
+const getBoards = async (userId, page, itemsPerPage, sortBy, queryFilters) => {
   if (!page) page = DEFAULT_PAGE
   if (!itemsPerPage) itemsPerPage = DEFAULT_ITEMS_PER_PAGE
   if (!sortBy) sortBy = DEFAULT_SORT_BY
@@ -71,7 +71,8 @@ const getBoards = async (userId, page, itemsPerPage, sortBy) => {
     userId,
     parseInt(page, 10),
     parseInt(itemsPerPage, 10),
-    sortBy
+    sortBy,
+    queryFilters
   )
 }
 export const boardService = {
