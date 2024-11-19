@@ -14,6 +14,7 @@ import {
 } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { inviteUserToBoardAPI } from '~/apis'
+import { socketIoInstance } from '~/main'
 
 function InviteBoardUser({ boardId }) {
   const [anchorPopoverElement, setAnchorPopoverElement] = useState(null)
@@ -32,9 +33,11 @@ function InviteBoardUser({ boardId }) {
   } = useForm()
   const submitInviteUserToBoard = (data) => {
     const { inviteeEmail } = data
-    inviteUserToBoardAPI({ inviteeEmail, boardId }).then(() => {
+    inviteUserToBoardAPI({ inviteeEmail, boardId }).then((invitation) => {
       setValue('inviteeEmail', null)
       setAnchorPopoverElement(null)
+
+      socketIoInstance.emit('FE_USER_INVITED_TO_BOARD', invitation)
     })
   }
 
