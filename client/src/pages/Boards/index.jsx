@@ -21,7 +21,6 @@ import HomeIcon from '@mui/icons-material/Home'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-// import CardMedia from '@mui/material/CardMedia'
 import Pagination from '@mui/material/Pagination'
 import PaginationItem from '@mui/material/PaginationItem'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -39,7 +38,6 @@ import {
 } from '~/utils/constants'
 import { FormControl, InputLabel, Select } from '@mui/material'
 import { handleFeatureInDevelopment } from '~/utils/handleFeatureInDevelopment'
-
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -78,8 +76,12 @@ function Boards() {
   const navigate = useNavigate()
 
   const updateStateData = (res) => {
+    const boardsWithColors = (res.boards || []).map((board) => ({
+      ...board,
+      backgroundColor: randomColor()
+    }))
     setData({
-      boards: res.boards || [],
+      boards: boardsWithColors,
       totalBoards: res.totalBoards || 0
     })
   }
@@ -211,7 +213,7 @@ function Boards() {
                           sx={{
                             height: '50px',
                             position: 'relative',
-                            backgroundColor: randomColor()
+                            backgroundColor: b.backgroundColor
                           }}
                         >
                           <Box
@@ -222,7 +224,6 @@ function Boards() {
                             }}
                           >
                             <Button
-                              width='100%'
                               id='basic-button-recent'
                               aria-controls={
                                 open ? 'basic-menu-recent' : undefined
@@ -273,33 +274,19 @@ function Boards() {
                       </Box>
 
                       <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 } }}>
-                        <Typography gutterBottom variant='h6' component='div'>
-                          {b.title}
-                        </Typography>
-                        <Typography
-                          variant='body2'
-                          color='text.secondary'
-                          sx={{
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                            textOverflow: 'ellipsis'
-                          }}
-                        >
-                          {b.description}
-                        </Typography>
                         <Box
                           sx={{
-                            mt: 1,
                             display: 'flex',
-                            alignItems: 'center',
                             justifyContent: 'space-between',
-                            color: 'primary.main'
+                            alignItems: 'center'
                           }}
                         >
+                          <Typography gutterBottom variant='h6' component='div'>
+                            {b.title}
+                          </Typography>
                           <Box
                             sx={{
-                              mt: 1,
-                              display: 'flex'
+                              cursor: 'pointer'
                             }}
                             onClick={() => handleStarred(b)}
                           >
@@ -317,20 +304,32 @@ function Boards() {
                               />
                             )}
                           </Box>
-                          <Box
-                            component={Link}
-                            to={`/boards/${b.slug}/${b._id}`}
-                            sx={{
-                              mt: 1,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'flex-end',
-                              color: 'primary.main',
-                              '&:hover': { color: 'primary.light' }
-                            }}
-                          >
-                            Go to board <ArrowRightIcon fontSize='small' />
-                          </Box>
+                        </Box>
+                        <Typography
+                          variant='body2'
+                          color='text.secondary'
+                          sx={{
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            textOverflow: 'ellipsis'
+                          }}
+                        >
+                          {b.description}
+                        </Typography>
+
+                        <Box
+                          component={Link}
+                          to={`/boards/${b.slug}/${b._id}`}
+                          sx={{
+                            mt: 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-end',
+                            color: 'primary.main',
+                            '&:hover': { color: 'primary.light' }
+                          }}
+                        >
+                          Go to board <ArrowRightIcon fontSize='small' />
                         </Box>
                       </CardContent>
                     </Card>

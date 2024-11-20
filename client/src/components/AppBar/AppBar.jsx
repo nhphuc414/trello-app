@@ -10,10 +10,8 @@ import Starred from './Menus/Starred'
 import Templates from './Menus/Templates'
 import Tooltip from '@mui/material/Tooltip'
 import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Profiles from './Menus/Profiles'
-import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
 import CloseIcon from '@mui/icons-material/Close'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
@@ -21,6 +19,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Notifications from './Notifications/Notifications'
 import AppBarCreateBoardModal from './AppBarCreateBoardModal'
+import { handleFeatureInDevelopment } from '~/utils/handleFeatureInDevelopment'
 function AppBar() {
   const [searchValue, setSearchValue] = useState('')
   return (
@@ -131,7 +130,7 @@ function AppBar() {
         />
         <ModeSelect />
         <Notifications />
-        <Tooltip title='Help'>
+        <Tooltip title='Help' onClick={handleFeatureInDevelopment}>
           <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'white' }} />
         </Tooltip>
         <Profiles sx={{ cursor: 'pointer' }} />
