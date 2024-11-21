@@ -206,7 +206,7 @@ function Boards() {
                         </Typography>
                         <Box
                           component={Link}
-                          to={`/boards/${b.slug}/${b._id}`}
+                          to={`/boards/${b._id}/${b.slug}`}
                           sx={{
                             mt: 1,
                             display: 'flex',

@@ -39,7 +39,7 @@ function AutoCompleteSearchBoard() {
   const debounceSearchBoard = useDebounceFn(handleInputSearchChange, 1000)
   const handleSelectedBoard = (event, selectedBoard) => {
     if (selectedBoard) {
-      navigate(`/boards/${selectedBoard.slug}/${selectedBoard._id}`)
+      navigate(`/boards/${selectedBoard._id}/${selectedBoard.slug}`)
     }
   }
 

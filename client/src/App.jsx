@@ -23,7 +23,7 @@ function App() {
       <Route element={<ProtectedRoute user={currentUser} />}>
         <Route path='/boards' element={<Boards />} />
         <Route path='/boards/:boardId' element={<Board />} />
-        <Route path='/boards/:slug/:boardId' element={<Board />} />
+        <Route path='/boards/:boardId/:slug' element={<Board />} />
         {/* User Setting */}
         <Route path='/settings/account' element={<Settings />} />
         <Route path='/settings/security' element={<Settings />} />
