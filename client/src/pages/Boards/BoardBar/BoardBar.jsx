@@ -6,8 +6,11 @@ import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import BoltIcon from '@mui/icons-material/Bolt'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import Tooltip from '@mui/material/Tooltip'
+import StarBorderIcon from '@mui/icons-material/StarBorder'
+import StarIcon from '@mui/icons-material/Star'
 import { capitalizeFirstLetter } from '~/utils/formatters'
 import BoardUserGroup from './BoardUserGroup'
+import IconButton from '@mui/material/IconButton'
 import InviteBoardUser from './InviteBoardUser'
 function BoardBar(props) {
   const MENU_STYLES = {
@@ -27,7 +30,7 @@ function BoardBar(props) {
   return (
     <Box
       sx={{
-        paddingX: 2,
+        paddingX: 1,
         width: '100%',
         height: (theme) => theme.trello.boardBarHeight,
         display: 'flex',
@@ -49,6 +52,34 @@ function BoardBar(props) {
             clickable
           />
         </Tooltip>
+        <IconButton
+          sx={{
+            bgcolor: 'transparent',
+            border: 'none',
+            paddingY: '4px',
+            paddingX: '12px',
+
+            borderRadius: '4px',
+            '&:hover': {
+              color: 'primary.50'
+            }
+          }}
+        >
+          {board?.starred ? (
+            <StarIcon
+              sx={{
+                color: '#bfbf21'
+              }}
+            />
+          ) : (
+            <StarBorderIcon
+              sx={{
+                color: '#bfbf21'
+              }}
+            />
+          )}
+        </IconButton>
+
         <Chip
           sx={MENU_STYLES}
           icon={<VpnLockIcon />}

@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logoutUserAPI, selectCurrentUser } from '~/redux/user/userSlice'
 import { useConfirm } from 'material-ui-confirm'
 import { Link } from 'react-router-dom'
+import { handleFeatureInDevelopment } from '~/utils/handleFeatureInDevelopment'
 
 function Profiles() {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -80,13 +81,13 @@ function Profiles() {
           </MenuItem>
         </Link>
         <Divider />
-        <MenuItem>
+        <MenuItem onClick={handleFeatureInDevelopment}>
           <ListItemIcon>
             <PersonAdd fontSize='small' />
           </ListItemIcon>
           Add another account
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={handleFeatureInDevelopment}>
           <ListItemIcon>
             <Settings fontSize='small' />
           </ListItemIcon>

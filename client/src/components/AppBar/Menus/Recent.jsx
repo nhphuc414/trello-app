@@ -12,12 +12,13 @@ import ContentPaste from '@mui/icons-material/ContentPaste'
 import Cloud from '@mui/icons-material/Cloud'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Box from '@mui/material/Box'
+import { handleFeatureInDevelopment } from '~/utils/handleFeatureInDevelopment'
 function Recent() {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
+  // const handleClick = (event) => {
+  //   setAnchorEl(event.currentTarget)
+  // }
   const handleClose = () => {
     setAnchorEl(null)
   }
@@ -29,7 +30,7 @@ function Recent() {
         aria-controls={open ? 'basic-menu-recent' : undefined}
         aria-haspopup='true'
         aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
+        onClick={handleFeatureInDevelopment}
         endIcon={<ExpandMoreIcon />}
       >
         Recent
