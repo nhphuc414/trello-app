@@ -1,0 +1,9 @@
+services:
+  trello-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8017:8017'
+    env_file:
+      - .env
