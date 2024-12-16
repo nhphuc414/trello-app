@@ -1,5 +1,6 @@
 services:
   trello-server:
+    container_name: trello-server
     build:
       context: .
       dockerfile: Dockerfile
@@ -7,3 +8,4 @@ services:
       - '8017:8017'
     env_file:
       - .env
+    restart: always

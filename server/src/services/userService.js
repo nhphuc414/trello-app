@@ -112,6 +112,12 @@ const updateUser = async (id, data, userAvatarFile) => {
     throw new ApiError(StatusCodes.NOT_FOUND, 'Account not found!')
   let updatedUser = {}
   if (data.current_password && data.new_password) {
+    if (existUser.email === 'test@gmail.com')
+      throw new ApiError(
+        StatusCodes.NOT_ACCEPTABLE,
+        // eslint-disable-next-line quotes
+        "Please don't change the password of the test account!"
+      )
     if (!bcryptjs.compareSync(data.current_password, existUser.password))
       throw new ApiError(
         StatusCodes.NOT_FOUND,
