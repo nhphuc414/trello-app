@@ -19,7 +19,6 @@ const updateBoardInvitation = async (req, res) => {
   const userId = req.jwtDecoded._id
   const { invitationId } = req.params
   const { status } = req.body
-  console.log(status)
   const updatedInvitation = await invitationService.updateBoardInvitation(
     userId,
     invitationId,
