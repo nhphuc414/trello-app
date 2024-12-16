@@ -45,7 +45,7 @@ function AutoCompleteSearchBoard() {
 
   return (
     <Autocomplete
-      sx={{ width: 220 }}
+      sx={{ width: 200 }}
       id='asynchronous-search-board'
       noOptionsText={!boards ? 'Type to search board...' : 'No board found!'}
       open={open}
@@ -64,7 +64,7 @@ function AutoCompleteSearchBoard() {
       renderInput={(params) => (
         <TextField
           {...params}
-          label='Type to search...'
+          label='Search board...'
           size='small'
           InputProps={{
             ...params.InputProps,

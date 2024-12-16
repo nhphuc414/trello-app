@@ -1,4 +1,7 @@
 //Concfig socket.io
 import { io } from 'socket.io-client'
 import { API_ROOT } from './utils/constants.js'
-export const socketIoInstance = io(API_ROOT)
+export const socketIoInstance = io(API_ROOT, {
+  reconnection: true,
+  reconnectionAttempts: 5
+})
