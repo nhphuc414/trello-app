@@ -15,12 +15,16 @@ pipeline {
     runScript = 'sudo su ${appUser} -c "cd ${folderDeploy};docker-compose up -d"'
   }
   stages {
-    stage('build') {
+    stage('build-server') {
       steps {
         dir('./server') {
           writeFile(file: './server/.env', text: TRELLO_SERVER_ENV)
           sh(script: """ sudo docker build -t ${TRELLO_SERVER_IMAGE} . """, label: "build server image")
         }
+      }
+    }
+    stage('build-client') {
+      steps {
         dir('./client') {
           sh(script: """ sudo docker build -t ${TRELLO_CLIENT_IMAGE} . """, label: "build client image")
         }
