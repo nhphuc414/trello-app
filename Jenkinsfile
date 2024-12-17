@@ -1,5 +1,7 @@
 pipeline {
-  agent any
+  agent {
+    label 'aws-server'
+  }
   environment {
     TRELLO_SERVER_ENV = credentials('trello-server-env')
     DOCKER_REGISTRY = 'nhphuc414/trello-app'
