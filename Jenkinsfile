@@ -12,7 +12,7 @@ pipeline {
       steps {
         dir('./server') {
           withCredentials([file(credentialsId: 'trello-server-env', variable: 'TRELLO_SERVER_ENV')]) {
-            bat(script: """copy ${TRELLO_SERVER_ENV} .server\\.env""", label: "create .env file")
+            bat(script: """copy ${TRELLO_SERVER_ENV} .env""", label: "create .env file")
           }
         }
         bat(script: """docker-compose build""", label: "build images")
