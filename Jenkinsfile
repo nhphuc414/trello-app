@@ -21,7 +21,7 @@ pipeline {
           sh(script: """ docker pull ${TRELLO_CLIENT_IMAGE} """, label: "pull client image to server")
           sh(script: """ docker pull ${TRELLO_SERVER_IMAGE} """, label: "pull server image to server")
           sh(script: """ ${killScript} """, label: "terminate the running project container")
-          sh(script: """  sudo -u ${appUser} -i bash -c "cd ${folderDeploy} && docker-compose up -d"""", label: "run project container")
+          sh(script: ' sudo -u ${appUser} -i bash -c "cd ${folderDeploy} && docker-compose up -d"', label: "run project container")
         }
       }
     }
