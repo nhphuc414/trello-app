@@ -9,41 +9,16 @@ pipeline {
     copyScript = "sudo cp ./docker-compose.yml ${folderDeploy}"
     permsScript = "sudo chown -R ${appUser}. ${folderDeploy}"
     killScript = 'sudo -c "cd ${folderDeploy};docker-compose down || true"'
-    runScript = 'sudo su ${appUser} -c "cd ${folderDeploy};docker-compose up -d"'
+    runScript = ''
   }
   stages {
-    stage('build') {
-      agent { label 'my-lap'}
-      steps {
-        dir('./server') {
-          withCredentials([file(credentialsId: 'trello-server-env', variable: 'TRELLO_SERVER_ENV')]) {
-            bat(script: """copy ${TRELLO_SERVER_ENV} .env""", label: "create .env file")
-          }
-          bat(script: """ docker build -t ${TRELLO_SERVER_IMAGE} . """, label: "build server image")
-        }
-        dir('./client') {
-          bat(script: """ docker build -t ${TRELLO_CLIENT_IMAGE} . """, label: "build client image")
-        }
-      }
-    }
-    stage('push') {
-      agent { label 'my-lap' }
-      steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-          bat(script: """ docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD """, label: "login to dockerhub")
-          bat(script: """ docker push ${TRELLO_CLIENT_IMAGE} """, label: "push client image to hub")
-          bat(script: """ docker push ${TRELLO_SERVER_IMAGE} """, label: "push server image to hub")
-        }
-      }
-    }
     stage('deploy') {
       agent { label 'aws-server' }
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-          sh(script: """ sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD """, label: "login to dockerhub")
-          sh(script: """ ${killScript} """, label: "terminate the running project container")
           sh(script: """ ${copyScript} """, label: "copy run script to deploy folder")
-          sh(script: """ ${runScript} """, label: "run project container")
+          sh(script: """ ${killScript} """, label: "terminate the running project container")
+          sh(script: """  sudo su ${appUser} -c "cd ${folderDeploy};sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;docker-compose up -d"""", label: "run project container")
         }
       }
     }
