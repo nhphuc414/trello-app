@@ -2,7 +2,7 @@ let apiRoot = ''
 if (import.meta.env.MODE === 'development') {
   apiRoot = 'http://localhost:8016'
 } else if (import.meta.env.MODE === 'production') {
-  apiRoot = 'http://localhost:8017'
+  apiRoot = 'https://server.trellonhp.site'
 }
 export const API_ROOT = apiRoot
 
