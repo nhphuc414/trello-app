@@ -1,13 +1,21 @@
 services:
   trello-server:
     container_name: trello-server
-    image: nhphuc414/trello-app:trello-server-latest
+    image: nhphuc414/trello-app/server:latest
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    env_file:
+      - .env
     ports:
       - '8017:8017'
     restart: always
   trello-client:
     container_name: trello-client
-    image: nhphuc414/trello-app:trello-client-latest
+    image: nhphuc414/trello-app/client:latest
+    build:
+      context: ./client
+      dockerfile: Dockerfile
     depends_on:
       - trello-server
     ports:
