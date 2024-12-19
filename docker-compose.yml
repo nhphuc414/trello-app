@@ -1,7 +1,7 @@
 services:
   trello-server:
     container_name: trello-server
-    image: nhphuc414/trello-app/server:latest
+    image: nhphuc414/trello-app:server-latest
     build:
       context: ./server
       dockerfile: Dockerfile
@@ -12,7 +12,7 @@ services:
     restart: always
   trello-client:
     container_name: trello-client
-    image: nhphuc414/trello-app/client:latest
+    image: nhphuc414/trello-app:client-latest
     build:
       context: ./client
       dockerfile: Dockerfile
