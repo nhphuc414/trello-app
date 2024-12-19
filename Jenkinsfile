@@ -2,8 +2,8 @@ pipeline {
   agent none
   environment {
     DOCKER_REGISTRY = 'nhphuc414/trello-app'
-    TRELLO_CLIENT_IMAGE = "${DOCKER_REGISTRY}/trello-client:latest"
-    TRELLO_SERVER_IMAGE = "${DOCKER_REGISTRY}/trello-server:latest"
+    TRELLO_CLIENT_IMAGE = "${DOCKER_REGISTRY}:trello-client-latest"
+    TRELLO_SERVER_IMAGE = "${DOCKER_REGISTRY}:trello-server-latest"
     appUser = "trello"
     folderDeploy = "/deploy/${appUser}"
     copyScript = "sudo cp ./docker-compose.yml ${folderDeploy}"
