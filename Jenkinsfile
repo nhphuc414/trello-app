@@ -8,7 +8,7 @@ pipeline {
     folderDeploy = "/deploy/${appUser}"
     copyScript = "sudo cp ./docker-compose.yml ${folderDeploy}"
     permsScript = "sudo chown -R ${appUser}. ${folderDeploy}"
-    killScript = 'sudo -c "cd ${folderDeploy};docker-compose down || true"'
+    killScript = 'sudo bash -c "cd ${folderDeploy} && docker-compose down"'
     runScript = ''
   }
   stages {
