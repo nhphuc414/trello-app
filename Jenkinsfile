@@ -16,8 +16,8 @@ pipeline {
       agent { label 'my-lap'}
       steps {
         dir('./server') {
-          withCredentials([string(credentialsId: 'trello-server-env', variable: 'TRELLO_SERVER_ENV')]) {
-            writeFile(file: './server/.env', text: TRELLO_SERVER_ENV)
+          withCredentials([file(credentialsId: 'trello-server-env', variable: 'TRELLO_SERVER_ENV')]) {
+            sh(script: "cp ${TRELLO_SERVER_ENV} ./server/.env", label: "file .env")
           }
           sh(script: """ sudo docker build -t ${TRELLO_SERVER_IMAGE} . """, label: "build server image")
         }
