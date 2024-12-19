@@ -17,12 +17,12 @@ pipeline {
       steps {
         dir('./server') {
           withCredentials([file(credentialsId: 'trello-server-env', variable: 'TRELLO_SERVER_ENV')]) {
-            sh(script: "cp ${TRELLO_SERVER_ENV} ./server/.env", label: "file .env")
+            bat(script: "cp ${TRELLO_SERVER_ENV} ./server/.env", label: "file .env")
           }
-          sh(script: """ sudo docker build -t ${TRELLO_SERVER_IMAGE} . """, label: "build server image")
+          bat(script: """ docker build -t ${TRELLO_SERVER_IMAGE} . """, label: "build server image")
         }
         dir('./client') {
-          sh(script: """ sudo docker build -t ${TRELLO_CLIENT_IMAGE} . """, label: "build client image")
+          bat(script: """ docker build -t ${TRELLO_CLIENT_IMAGE} . """, label: "build client image")
         }
       }
     }
@@ -30,9 +30,9 @@ pipeline {
       agent { label 'my-lap' }
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-          sh(script: """ sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD """, label: "login to dockerhub")
-          sh(script: """ sudo docker push ${TRELLO_CLIENT_IMAGE} """, label: "push client image to hub")
-          sh(script: """ sudo docker push ${TRELLO_SERVER_IMAGE} """, label: "push server image to hub")
+          bat(script: """ docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD """, label: "login to dockerhub")
+          bat(script: """ docker push ${TRELLO_CLIENT_IMAGE} """, label: "push client image to hub")
+          bat(script: """ docker push ${TRELLO_SERVER_IMAGE} """, label: "push server image to hub")
         }
       }
     }
