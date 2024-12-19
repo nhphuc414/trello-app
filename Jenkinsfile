@@ -17,7 +17,7 @@ pipeline {
       steps {
         dir('./server') {
           withCredentials([file(credentialsId: 'trello-server-env', variable: 'TRELLO_SERVER_ENV')]) {
-            bat(script: "cp ${TRELLO_SERVER_ENV} ./server/.env", label: "file .env")
+            bat(script: """echo $TRELLO_SERVER_ENV > .\\server\\.env""", label: "create .env file")
           }
           bat(script: """ docker build -t ${TRELLO_SERVER_IMAGE} . """, label: "build server image")
         }
