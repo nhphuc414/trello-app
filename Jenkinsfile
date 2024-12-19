@@ -18,7 +18,7 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
           sh(script: """ ${copyScript} """, label: "copy run script to deploy folder")
           sh(script: """ ${killScript} """, label: "terminate the running project container")
-          sh(script: """  sudo su ${appUser} -c "cd ${folderDeploy};sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;docker-compose up -d"""", label: "run project container")
+          sh(script: ' sudo su ${appUser} -c "cd ${folderDeploy};sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;docker-compose up -d" ', label: "run project container")
         }
       }
     }
