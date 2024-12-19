@@ -51,8 +51,7 @@ pipeline {
     }
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-         sh(script: """ sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWOR """, label: "login to dockerhub")
-        }
+        sh(script: """ sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWOR """, label: "login to dockerhub")
         sh(script: """ ${killScript} """, label: "terminate the running project container")
         sh(script: """ ${copyScript} """, label: "copy run script to deploy folder")
         sh(script: """ ${runScript} """, label: "run project container")
