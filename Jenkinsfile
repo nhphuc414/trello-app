@@ -8,7 +8,7 @@ pipeline {
     folderDeploy = "/deploy/${appUser}"
     copyScript = "sudo cp ./docker-compose.yml ${folderDeploy}"
     permsScript = "sudo chown -R ${appUser}. ${folderDeploy}"
-    killScript = 'sudo bash -c "cd ${folderDeploy} && docker-compose down"'
+    killScript = 'sudo bash -c "cd ${folderDeploy} && sudo docker-compose down"'
     runScript = ''
   }
   stages {
@@ -21,7 +21,7 @@ pipeline {
           sh(script: """ sudo docker pull ${TRELLO_CLIENT_IMAGE} """, label: "pull client image to server")
           sh(script: """ sudo docker pull ${TRELLO_SERVER_IMAGE} """, label: "pull server image to server")
           sh(script: """ ${killScript} """, label: "terminate the running project container")
-          sh(script: ' sudo -u ${appUser} -i bash -c "cd ${folderDeploy} && docker-compose up -d"', label: "run project container")
+          sh(script: ' sudo -u ${appUser} -i bash -c "cd ${folderDeploy} && sudo docker-compose up -d"', label: "run project container")
         }
       }
     }
